@@ -19,11 +19,41 @@
           <form>
 
  <div>
-        <va-input v-model="role_name" placeholder="Role Name">
-                  </va-input>
-                   <va-input v-model="role_desc" placeholder="Role Description">
-                  </va-input>
+  <va-select
+        v-model="company"
+        :options="listCompany"
+        @input="setSelected" 
+        textBy="description"
+        placeholder="Company"
+      />
 
+  <va-select
+        v-model="branch"
+        :options="listBranch"
+        @input="setSelectedBranch" 
+        textBy="description"
+        placeholder="Branch"
+      />
+
+        <va-select
+        v-model="role"
+        :options="listRole"
+        @input="setSelectedRole" 
+        textBy="description"
+        placeholder="Role"
+      />
+        <va-select
+        v-model="menu"
+        :options="listMenu"
+        @input="setSelectedMenu" 
+        textBy="description"
+        placeholder="Menu"
+      />
+        <va-input v-model="resp_name" placeholder="Responsibility Name">
+                  </va-input>
+         <va-input v-model="resp_desc" placeholder="Responsibility Description">
+                  </va-input>
+        <va-checkbox v-model="active_flag" label="Active Flag" />          
                    <va-button  type="button" color="danger" @click="close_modal()"> Cancel</va-button>
                          <va-button  type="button" color="success" @click="submit()"> Submit</va-button>
                         
@@ -55,28 +85,149 @@ export default {
   data() {
     return {
       listResponsibility:[],
-      role_name:'',
+      listMenu:[],
+      resp_name:'',
+      resp_desc:'',
+      active_flag:false,
       role_desc:'',
+      company:'',
+      branch:'',
+      menu:'',
+      role:'',
+      listRole:[],
+      listBranch:[],
+      listCompany:[],
       showResponsibilityModal:false
     };
   },
   mounted() {
   this.get_responsibility();
+  this.get_role();
+  this.get_menu();
     
   },
   created:function(){
     
-    
+    this.get_data_master_company();
+   
    
   },
   methods: {
    addResponsibility(){
     this.showResponsibilityModal=true;
    },
+   get_menu:function(){
+      axios({
+        method: "post",
+        url: "http://localhost:8000/get_data_menu/",
+        data: {
+          token: this.$session.get("token"),
+
+        },
+        headers: {
+          Authorization: "Bearer " + this.$session.get("token")
+        }
+      })
+        .then(response => {
+          this.listMenu = [];
+          this.data = response.data;
+          this.data.forEach(item => {
+            this.listMenu.push({ description: item.MENU_NAME, id: item.MENU_ID });
+          });
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
+   },
+   get_role: function() {
+      axios({
+        method: "post",
+        url: "http://localhost:8000/get_list_role/",
+        data: {
+          token: this.$session.get("token")
+        },
+        headers: {
+          Authorization: "Bearer " + this.$session.get("token")
+        }
+      })
+        .then(response => {
+          this.listRole = [];
+          this.data = response.data;
+          this.data.forEach(item => {
+            this.listRole.push({ description: item.ROLE_NAME, id: item.ROLE_ID });
+          });
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
+    },
+   get_data_master_company(){
+      axios({
+                              method: "post",
+                              url: "http://localhost:8000/get_data_master_company/",
+                              data: {
+                               token:this.$session.get("token")
+                              },
+                              headers: {
+                                Authorization: "Bearer " + this.$session.get("token")
+                              }
+                            })
+                              .then(response =>{
+                       
+                                   this.listCompany = [];
+          this.data = response.data;
+          this.data.forEach(item => {
+            this.listCompany.push({ description: item.COMPANY_NAME, id: item.COMPANY_ID });
+          });
+                              })
+                              .catch(error => {
+                                console.log(error.response);
+                              });
+   },
+    setSelected(value){
+    this.company=value.description;
+    this.get_data_cbg_by_company(value.description);
+    },
+    setSelectedBranch(value){
+    this.branch=value.description;
+    
+    },
+    setSelectedRole(value){
+    this.role=value.description;
+    
+    },
+    setSelectedMenu(value){
+    this.menu=value.description;
+    
+    },
+    get_data_cbg_by_company(company_name){
+      axios({
+                              method: "post",
+                              url: "http://localhost:8000/get_data_cbg_by_company/",
+                              data: {
+                               token:this.$session.get("token"),
+                               company_name:company_name
+                              },
+                              headers: {
+                                Authorization: "Bearer " + this.$session.get("token")
+                              }
+                            })
+                              .then(response =>{
+                       
+                                   this.listCompany = [];
+          this.data = response.data;
+          this.data.forEach(item => {
+            this.listBranch.push({ description: item.BRANCH_NAME, id: item.BRANCH_ID });
+          });
+                              })
+                              .catch(error => {
+                                console.log(error.response);
+                              });
+    },
    submit(){
      axios({
                               method: "post",
-                              url: "http://localhost:8000/insert_role/",
+                              url: "http://localhost:8000/insert_data_resp/",
                               data: {
                                 role_name:this.role_name,
                                 role_desc:this.role_desc,

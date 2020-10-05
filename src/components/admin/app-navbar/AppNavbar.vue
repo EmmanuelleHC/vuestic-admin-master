@@ -88,7 +88,7 @@ export default {
     },
     navbarStyle () {
       const style = {
-        backgroundColor: 'white',
+        backgroundColor: '#89cff0',
       }
 
       if (this.contextConfig.gradient) {
