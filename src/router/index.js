@@ -3,13 +3,17 @@ import Router from 'vue-router'
 import AuthLayout from '../pages/auth/AuthLayout'
 import AppLayout from '../components/admin/AppLayout'
 import VueSession from 'vue-session'
+
 Vue.use(Router)
 Vue.use(VueSession);
 const EmptyParentComponent = {
   template: '<router-view></router-view>',
 }
-export const serverBus = new Vue();
+
 const demoRoutes = []
+
+
+export const serverBus = new Vue();
 
 export default new Router({mode: 'history' ,
   routes: [

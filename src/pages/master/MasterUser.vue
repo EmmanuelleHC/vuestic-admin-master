@@ -1,59 +1,37 @@
 <template>
   <div class="form-elements">
   <div class="cards-container row d-flex wrap align--start">
-  <form>
-   <div class="row">
-
- <div class="flex xs12 sm6 md4">
-        <va-input v-model="username" placeholder="Username">
+    <va-card :title="'List User'">
+  
+    <v-form>
+         <va-input v-model="username" placeholder="Username">
                   </va-input>
-                 
-               
-      </div>
-      
-      <div class="flex xs12 sm6 md4">
-        <va-input v-model="email" type="email" placeholder="Email">
+         <va-input v-model="email" type="email" placeholder="Email">
                 </va-input>
-      </div>
-      <div class="flex xs12 sm6 md4">
-        
-         <va-select
+        <va-select
         v-model="role"
         :options="listRole"
         @input="setSelected" 
         textBy="description"
         placeholder="Role"
       />
-      </div>
-      <div class="flex xs12 sm6 md4">
-          <va-date-picker placeholder="Active Date" v-model="active_date" />
-                 
-               
-      </div>
-      <div class="flex xs12 sm6 md4">
-       <va-checkbox v-model="active_flag" label="Active Flag" />
-                      
-      </div>
-</div>
-<div class="row">
+       <va-date-picker placeholder="Active Date" v-model="active_date" />
+         <va-checkbox v-model="active_flag" label="Active Flag" />   
+   
+    </v-form>
+    <div class="row">
  <va-button  type="button" color="success" @click="add()" :disabled="!isFormValid"> Submit</va-button>
                         <va-button  type="button" color="danger" @click="reset()"> Cancel</va-button>
                          <va-button  type="button" color="info" @click="get_username()"> Show Username</va-button>
                           <va-button  type="button" color="gray" @click="addResp()">Add Responsibility</va-button>
 </div>
-
-
- <div class="d-flex align--center justify--space-between">
-     <br>
-    </div>
-
-          <div class="row">
+ 
+<div class="row">
+<v-spacer></v-spacer>
             <data-table-actions :data_list_user_resp_temp="data_list_user_resp_temp"
             class="mb-4"/>
           </div>
-        </form>
-  </div>
-      <div>
+ <div>
       <va-modal
       v-model="showUserModal"
       size="large"
@@ -61,13 +39,13 @@
          <data-table-actions2 class="sm-4"/>
       </va-modal>
       </div>
-       <div>
       <va-modal
       v-model="isListResp"
       size="large"
       :title="'List Responsibility'">
          <data-table-actions3 :data_list_user_resp="data_list_user_resp" :data_list_user_resp_temp="data_list_user_resp_temp" class="sm-4"/>
       </va-modal>
+    </va-card>
       </div>
   </div>
  
@@ -145,7 +123,7 @@ export default {
     setSelected(value){
     this.role=value.description;
     },
-      addResp(){
+    addResp(){
     if(this.role!=''){
       this.isListResp=true;
       this.get_list_user_resp();

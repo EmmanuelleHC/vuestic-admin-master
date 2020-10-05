@@ -1,42 +1,39 @@
 <template>
   <va-card :title="'List Responsibility'">
-    <va-data-table
-      :fields="fields"
-      :data="listResponsibility"
-      :per-page="5"
-    >
-      <template slot="actions" slot-scope="props">
-       
-
-        <va-button flat small color="danger" type="button" @click="edit(props.rowData)" class="ma-0">
-          Edit
-        </va-button>
-          
-
-      </template>
-
-
-
-    </va-data-table>
+    <v-data-table
+    v-model="selected"
+    :headers="fields"
+    :items="listResponsibility"
+    :single-select="singleSelect"
+    item-key="RESPONSIBILITY_NAME"
+    show-select
+    @click:row="edit"
+    class="elevation-1"
+  >
+  
+  </v-data-table>
 
       <va-modal
-      v-model="editRoleModal"
+      v-model="editResponsibilityModal"
       size="large"
-      :title="'Edit Role'"
+      :title="'Edit Responsibility'"
       :hideDefaultActions=true>
           
 
  
 <form>
   
-        <va-input v-model="role_name" placeholder="Role Name">
+        <va-input v-model="resp_name" placeholder="Responsibility Name">
                   </va-input>
-                   <va-input v-model="role_desc" placeholder="Role Description">
+         <va-input v-model="resp_desc" placeholder="Responsibility Description">
                   </va-input>
-
+        <va-checkbox v-model="active_flag" label="Active Flag" />          
                    <va-button  type="button" color="danger" @click="close_modal()"> Cancel</va-button>
                          <va-button  type="button" color="success" @click="update()"> Submit</va-button>
                         
+                 
+            
+                
         </form>         
             </va-modal>
   </va-card>
@@ -58,11 +55,15 @@ export default {
   data () {
     return {
     isFound:false,
-    editRoleModal:false,
+    editResponsibilityModal:false,
     pindah:[],
-    role_id:'',
-    role_name:'',
-    role_desc:''
+    selected:[],
+    singleSelect:true,
+    resp_id:'',
+    active_flag1:'',
+    resp_desc:'',
+      active_flag:false,
+      resp_name:''
     }
   },
   created () {
@@ -76,80 +77,86 @@ export default {
       return [
     
        {
-        name: 'COMPANY',
-        title: 'Company',
+        value: 'COMPANY',
+        text: 'Company',
       },{
-        name: 'CABANG',
-        title: 'Cabang',
+        value: 'CABANG',
+        text: 'Cabang',
       },
       {
-        name: 'ROLE',
-        title: 'Role',
+        value: 'ROLE',
+        text: 'Role',
       },
       {
-        name: 'MENU',
-        title: 'Menu',
+        value: 'MENU',
+        text: 'Menu',
       },
       {
-        name: 'RESP',
-        title: 'Resp',
+        value: 'RESP',
+        text: 'Resp',
       },
       {
-        name: 'RESP_DESC',
-        title: 'Resp Desc',
+        value: 'RESP_DESC',
+        text: 'Resp Desc',
       },
       {
-        name: 'ACTIVE',
-        title: 'Active Flag',
+        value: 'ACTIVE',
+        text: 'Active Flag',
       },
        {
-        name: 'ACTIVE_DATE',
-        title: 'Active Date',
+        value: 'ACTIVE_DATE',
+        text: 'Active Date',
       },
        {
-        name: 'INACTIVE_DATE',
-        title: 'Inactive Date',
-      },
-       {
-        name: '__slot:actions',
-        dataClass: 'text-right',
-      }]
+        value: 'INACTIVE_DATE',
+        text: 'Inactive Date',
+        }
+      ]
  
      
     },
   },
   methods: {
      edit (data) {
-       
+     this.resp_id=data.RESPONSIBILITY_ID;
+     this.resp_name=data.RESP;
+     this.resp_desc=data.RESP_DESC;
+     if(data.ACTIVE=='Y'){
+        this.active_flag1='Y';
+        this.active_flag=true;
+     }else{
+        this.active_flag1='N';
+        this.active_flag=false;
+     }
+     this.editResponsibilityModal=true;
 
       
     },
     close_modal(){
+         this.editResponsibilityModal=false;
+
         
     },
     update(){
-    if(this.role_name!='' && this.role_desc!=''){
-        axios({
-              method: "post",
-              url: "http://localhost:8000/compare_data_master_role/",
-              data: {
-                role_name:this.role_name,
-                token: this.$session.get("token")
-              },
-              headers: {
-                Authorization: "Bearer " + this.$session.get("token")
-              }
-            })
-              .then(response => {
-                  if(response.data==0){
+
+    if(this.active_flag==true){
+      this.active_flag1='Y'
+    }else{
+      this.active_flag1='N';
+    }
+
+    if( this.resp_name!='' && this.resp_desc!='' && this.active_flag1!=''){
+       
                     
                           axios({
                               method: "post",
-                              url: "http://localhost:8000/update_role/",
+                              url: "http://localhost:8000/update_data_resp/",
                               data: {
-                                role_name:this.role_name,
-                                role_desc:this.role_desc,
-                                role_id:this.role_id,
+                          
+                                resp_id:this.resp_id,
+                                resp_name:this.resp_name,
+                                resp_desc:this.resp_desc,
+                                active_flag:this.active_flag1,
                                 token: this.$session.get("token"),
                                 user_id:this.$session.get("id"),
                               },
@@ -161,7 +168,7 @@ export default {
                                   this.close_modal();
                                    Swal.fire({
                                       title: 'Success!',
-                                      text: 'Role berhasil diupdate.',
+                                      text: 'Responsibility berhasil diupdate.',
                                       icon: 'success',
                                     });
                                     this.get_role();
@@ -170,8 +177,8 @@ export default {
                               .catch(error => {
                                 console.log(error.response);
                               });
-                    }
-            })
+                    
+            
             }else{
             Swal.fire({
                             title: 'Warning!',

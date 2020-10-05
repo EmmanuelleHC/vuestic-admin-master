@@ -1,29 +1,19 @@
 <template>
   <va-card>
-    <va-data-table
-      :fields="fields"
-      :data="data_user"
-      :per-page="5"
-      clickable
-      
+  <v-data-table
+    v-model="selected"
+    :headers="fields"
+    :items="data_user"
+    :single-select="singleSelect"
+    item-key="USERNAME"
+    show-select
+    @click:row="select"
+    class="elevation-1"
+  >
+  
+  </v-data-table>
 
-    >
-      <template slot="marker" slot-scope="props">
-        <va-icon name="fa fa-circle" :color="props.rowData.color" size="8px" />
-      </template>
-       <template slot="actions" slot-scope="props">
-        <va-button flat small color="gray" @click="select(props.rowData)" class="ma-0">
-          {{ $t('choose') }}
-        </va-button>
-
-       
-          
-
-      </template>
-
-
-
-    </va-data-table>
+    
   </va-card>
 </template>
 
@@ -37,7 +27,9 @@ export default {
     return {
       data_user:[],
       pindah:[],
-      role:[]
+      role:[],
+      singleSelect: true,
+      selected: [],
     }
   },
   created () {
@@ -46,33 +38,29 @@ export default {
   computed: {
     fields () {
       return [
-     
-       {
-        name: '__slot:actions',
-        dataClass: 'text-right',
-      },
+
       {
-        name: 'USERNAME',
-        title: 'Username',
+        value: 'USERNAME',
+        text: 'Username',
       },{
-        name: 'ROLE_NAME',
-        title: 'Role',
+        value: 'ROLE_NAME',
+        text: 'Role',
       },
       {
-        name: 'EMAIL',
-        title: 'Email',
+        value: 'EMAIL',
+        text: 'Email',
       },
       {
-        name: 'ACTIVE_FLAG',
-        title: 'Active Status',
+        value: 'ACTIVE_FLAG',
+        text: 'Active Status',
       },
       {
-        name: 'ACTIVE_DATE',
-        title: 'Effective Date',
+        value: 'ACTIVE_DATE',
+        text: 'Effective Date',
       },
       {
-        name: 'USER_EXPR',
-        title: 'Period Access',
+        value: 'USER_EXPR',
+        text: 'Period Access',
       }]
  
      

@@ -63,24 +63,7 @@ export default {
   },
   data () {
     return {
-      items:[ {
-      name: 'statistics',
-      displayName: 'menu.statistics',
-      meta: {
-        iconClass: 'vuestic-iconset vuestic-iconset-statistics',
-      },
-      disabled: true,
-      children: [
-        {
-          name: 'charts',
-          displayName: 'menu.charts',
-        },
-        {
-          name: 'progress-bars',
-          displayName: 'menu.progressBars',
-        },
-      ],
-    }]
+      items:[],
      // items: navigationRoutes.routes,
     }
   },

@@ -24,6 +24,7 @@
         :options="listCompany"
         @input="setSelected" 
         textBy="description"
+        :id="company"
         placeholder="Company"
       />
 
@@ -104,11 +105,12 @@ export default {
   this.get_responsibility();
   this.get_role();
   this.get_menu();
+   this.get_data_master_company();
     
   },
   created:function(){
     
-    this.get_data_master_company();
+   
    
    
   },
@@ -225,12 +227,22 @@ export default {
                               });
     },
    submit(){
+       if(this.active_flag==true){
+            this.active_flag='Y';
+       }else{
+            this.active_flag='N';
+       }
      axios({
                               method: "post",
                               url: "http://localhost:8000/insert_data_resp/",
                               data: {
-                                role_name:this.role_name,
-                                role_desc:this.role_desc,
+                                company:this.company,
+                                branch:this.branch,
+                                role:this.role,
+                                menu:this.menu,
+                                resp_name:this.resp_name,
+                                resp_desc:this.resp_desc,
+                                active_flag:this.active_flag,
                                 token:this.$session.get("token"),
                                 user_id:this.$session.get("id")
                               },
@@ -244,16 +256,17 @@ export default {
                                     
                                    Swal.fire({
                                       title: 'Success!',
-                                      text: 'User berhasil didaftarkan.',
+                                      text: 'Responsibility berhasil didaftarkan.',
                                       icon: 'success',
                                     });
-                                    this.showRoleModal=false;
+                                    this.showResponsibilitModal=false;
                                     this.get_responsibility();
                                    console.log(response.data);
                               })
                               .catch(error => {
                                 console.log(error.response);
                               });
+   
    },
    close_modal(){
     this.showResponsibilityModal=false;

@@ -1,24 +1,17 @@
 <template>
   <va-card :title="'List Role'">
-    <va-data-table
-      :fields="fields"
-      :data="listRole"
-      :per-page="5"
-    >
-      <template slot="actions" slot-scope="props">
-       
-
-        <va-button flat small color="danger" type="button" @click="edit(props.rowData)" class="ma-0">
-          Edit
-        </va-button>
-          
-
-      </template>
-
-
-
-    </va-data-table>
-
+   <v-data-table
+    v-model="selected"
+    :headers="fields"
+    :items="listRole"
+    :single-select="singleSelect"
+    item-key="USERNAME"
+    show-select
+    @click:row="edit"
+    class="elevation-1"
+  >
+  
+  </v-data-table>
       <va-modal
       v-model="editRoleModal"
       size="large"
@@ -58,6 +51,8 @@ export default {
   data () {
     return {
     isFound:false,
+    singleSelect:true,
+    selected:[],
     editRoleModal:false,
     pindah:[],
     role_id:'',
@@ -76,15 +71,11 @@ export default {
       return [
     
        {
-        name: 'ROLE_NAME',
-        title: 'Role Name',
+        value: 'ROLE_NAME',
+        text: 'Role Name',
       },{
-        name: 'ROLE_DESC',
-        title: 'Role Desc',
-      },
-       {
-        name: '__slot:actions',
-        dataClass: 'text-right',
+        value: 'ROLE_DESC',
+        text: 'Role Desc',
       }]
  
      

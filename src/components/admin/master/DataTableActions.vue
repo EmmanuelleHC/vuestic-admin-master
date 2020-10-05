@@ -1,94 +1,111 @@
 <template>
-  <va-card :title="'List User Responsibility'">
-    <va-data-table
-      :fields="fields"
-      :data="data_list_user_resp_temp"
-      :per-page="5"
-    >
-      <template slot="marker" slot-scope="props">
-        <va-icon name="fa fa-circle" :color="props.rowData.color" size="8px" />
-      </template>
+  <v-data-table
+    :headers="headers"
+    :items="data_list_user_resp_temp"
+    sort-by="RESPONSIBILITY_ID"
+    class="elevation-1"
+  >
+    <template v-slot:top>
+      <v-toolbar
+        flat
+      >
+      
+        <v-divider
+          class="mx-4"
+          inset
+          vertical
+        ></v-divider>
+        <v-spacer></v-spacer>
+      </v-toolbar>
+    </template>
+    <template v-slot:item.actions="{ item }">
+     
+      <v-btn
+        small
+        @click="deleteItem(item)"
+      >
+       Delete
+      </v-btn>
+    </template>
 
-      <template slot="actions" slot-scope="props">
-       
-
-        <va-button flat small color="danger" type="button" @click="remove(props.rowData)" class="ma-0">
-          {{ $t('tables.delete') }}
-        </va-button>
-          
-
-      </template>
-
-
-    </va-data-table>
-  </va-card>
+  </v-data-table>
 </template>
-
 <script>
-
-export default {
-  data () {
-    return {
-    }
-  },
-  created () {
-  },  
-  props:{
-  data_list_user_resp_temp:Array
-  },
-  computed: {
-    fields () {
-      return [{
-        name: '__slot:marker',
-        width: '30px',
-        dataClass: 'text-center',
-      }, {
-        name: 'RESPONSIBILITY_NAME',
-        title: 'Resp Name',
-      },{
-        name: 'RESPONSIBILITY_DESC',
-        title: 'Resp Desc',
+  export default {
+    data: () => ({
+      dialog: false,
+      dialogDelete: false,
+      editedIndex: -1,
+      editedItem: {
+        name: '',
+        calories: 0,
+        fat: 0,
+        carbs: 0,
+        protein: 0,
       },
-      {
-        name: 'BRANCH_NAME',
-        title: 'Branch',
+      headers: [
+        { text: 'Resp Name', value: 'RESPONSIBILITY_NAME' },
+        { text: 'Resp Desc', value: 'RESPONSIBILITY_DESC' },
+        { text: 'Branch', value: 'BRANCH_NAME' },
+        { text: 'Company', value: 'COMPANY_NAME' },
+        { text: 'Active Flag', value: 'ACTIVE_FLAG' },
+        { text: 'Effective Date', value: 'ACTIVE_DATE' },
+        { text: 'Ineffective Date', value: 'INACTIVE_DATE' },
+        { text: 'Actions', value: 'actions', sortable: false },
+      ],
+      defaultItem: {
+        RESPONSIBILITY_NAME: '',
+        RESPONSIBILITY_DESC: '',
+        BRANCH_NAME:'',
+        COMPANY_NAME:'',
+        ACTIVE_FLAG: '',
+        ACTIVE_DATE: '',
+        INACTIVE_DATE: '',
       },
-      {
-        name: 'COMPANY_NAME',
-        title: 'Company',
-      },
-      {
-        name: 'ACTIVE_FLAG',
-        title: 'Active Flag',
-      },
-      {
-        name: 'ACTIVE_DATE',
-        title: 'Effective Date',
-      },
-      {
-        name: 'INACTIVE_DATE',
-        title: 'Ineffective Date',
-      },
-       {
-        name: '__slot:actions',
-        dataClass: 'text-right',
-      }]
- 
-     
+    }),
+    props:{
+        data_list_user_resp_temp:Array
     },
-  },
-  methods: {
-   
-     
-    remove (resp_user) {
-    
-      var index=this.data_list_user_resp_temp.indexOf(resp_user);
-      this.data_list_user_resp_temp.splice(index, 1);
+    computed: {
+      formTitle () {
+        return 'New Item' 
+      },
+    },
+
+    watch: {
+      dialog (val) {
+        val || this.close()
+      },
+      dialogDelete (val) {
+        val || this.closeDelete()
+      },
+    },
+
+    created () {
+      
+    },
+
+    methods: {
+      deleteItem (item) {
+        var index=this.data_list_user_resp_temp.indexOf(item);
+        this.data_list_user_resp_temp.splice(index, 1);
   
+      },
+      close () {
+        this.dialog = false
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedIndex = -1
+        })
+      },
+      save () {
+        if (this.editedIndex > -1) {
+          Object.assign(this.data_list_user_resp_temp[this.editedIndex], this.editedItem)
+        } else {
+          this.data_list_user_resp_temp.push(this.editedItem)
+        }
+        this.close()
+      },
     },
-  },
-}
+  }
 </script>
-
-<style lang="scss">
-</style>

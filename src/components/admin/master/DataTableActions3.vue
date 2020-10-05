@@ -1,26 +1,17 @@
 <template>
-  <va-card :title="'List Responsibility'">
-    <va-data-table
-      :fields="fields"
-      :data="data_list_user_resp"
-      :per-page="5"
-    >
-      <template slot="marker" slot-scope="props">
-        <va-icon name="fa fa-circle" :color="props.rowData.color" size="8px" />
-      </template>
-
-      <template slot="actions" slot-scope="props">
-       
-
-        <va-button flat small color="danger" type="button" @click="choose(props.rowData)" class="ma-0">
-        choose
-        </va-button>
-          
-
-      </template>
-
-
-    </va-data-table>
+  <va-card>
+    <v-data-table
+    v-model="selected"
+    :headers="fields"
+    :items="data_list_user_resp"
+    :single-select="singleSelect"
+    item-key="RESPONSIBILITY_ID"
+    show-select
+    @click:row="choose"
+    class="elevation-1"
+  >
+  
+  </v-data-table>
   </va-card>
 </template>
 
@@ -36,6 +27,8 @@ export default {
     return {
     isFound:false,
     pindah:[],
+    singleSelect:true,
+    selected: [],
     }
   },
   created () {
@@ -49,34 +42,31 @@ export default {
     fields () {
       return [
        {
-        name: '__slot:actions',
-        dataClass: 'text-right',
-      }, {
-        name: 'RESPONSIBILITY_NAME',
-        title: 'Resp Name',
+        value: 'RESPONSIBILITY_NAME',
+        text: 'Resp Name',
       },{
-        name: 'RESPONSIBILITY_DESC',
-        title: 'Resp Desc',
+        value: 'RESPONSIBILITY_DESC',
+        text: 'Resp Desc',
       },
       {
-        name: 'BRANCH_NAME',
-        title: 'Branch',
+        value: 'BRANCH_NAME',
+        text: 'Branch',
       },
       {
-        name: 'COMPANY_NAME',
-        title: 'Company',
+        value: 'COMPANY_NAME',
+        text: 'Company',
       },
       {
-        name: 'ACTIVE_FLAG',
-        title: 'Active Flag',
+        value: 'ACTIVE_FLAG',
+        text: 'Active Flag',
       },
       {
-        name: 'ACTIVE_DATE',
-        title: 'Effective Date',
+        value: 'ACTIVE_DATE',
+        text: 'Effective Date',
       },
       {
-        name: 'INACTIVE_DATE',
-        title: 'Ineffective Date',
+        value: 'INACTIVE_DATE',
+        text: 'Ineffective Date',
       }]
  
      

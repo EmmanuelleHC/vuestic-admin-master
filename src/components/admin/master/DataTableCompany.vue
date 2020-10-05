@@ -1,24 +1,17 @@
 <template>
   <va-card :title="'List Company'">
-    <va-data-table
-      :fields="fields"
-      :data="listCompany"
-      :per-page="5"
-    >
-      <template slot="actions" slot-scope="props">
-       
-
-        <va-button flat small color="danger" type="button" @click="edit(props.rowData)" class="ma-0">
-          Edit
-        </va-button>
-          
-
-      </template>
-
-
-
-    </va-data-table>
-
+   <v-data-table
+    v-model="selected"
+    :headers="fields"
+    :items="listCompany"
+    :single-select="singleSelect"
+    item-key="COMPANY_NAME"
+    show-select
+    @click:row="edit"
+    class="elevation-1"
+  >
+  
+  </v-data-table>
       <va-modal
       v-model="editCompanyModal"
       size="large"
@@ -58,8 +51,10 @@ export default {
   data () {
     return {
     isFound:false,
+    singleSelect:true,
     editCompanyModal:false,
     pindah:[],
+    selected:[],
     company_code:'',
     active_flag1:'',
     company_name:'',
@@ -78,18 +73,14 @@ export default {
       return [
     
        {
-        name: 'COMPANY_CODE',
-        title: 'Company Code',
+        value: 'COMPANY_CODE',
+        text: 'Company Code',
       },{
-        name: 'COMPANY_NAME',
-        title: 'Company Name',
+        value: 'COMPANY_NAME',
+        text: 'Company Name',
       },{
-        name: 'ACTIVE_FLAG',
-        title: 'Active Flag',
-      },
-       {
-        name: '__slot:actions',
-        dataClass: 'text-right',
+        value: 'ACTIVE_FLAG',
+        text: 'Active Flag',
       }]
  
      
