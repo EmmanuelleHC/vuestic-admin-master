@@ -88,8 +88,7 @@ export default {
                               data: {
                                 company_code:this.company_code,
                                 company_name:this.company_name,
-                                active_flag:this.active_flag,
-                                token:this.$session.get("token"),
+                                active_flag:this.active_flag,                         
                                 user_id:this.$session.get("id")
                               },
                               headers: {
@@ -118,10 +117,9 @@ export default {
    },
     get_company: function() {
       axios({
-        method: "post",
+        method: "get",
         url: "http://localhost:8000/get_data_master_company/",
         data: {
-          token: this.$session.get("token")
         },
         headers: {
           Authorization: "Bearer " + this.$session.get("token")

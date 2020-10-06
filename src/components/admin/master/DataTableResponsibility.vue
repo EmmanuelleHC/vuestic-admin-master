@@ -157,7 +157,6 @@ export default {
                                 resp_name:this.resp_name,
                                 resp_desc:this.resp_desc,
                                 active_flag:this.active_flag1,
-                                token: this.$session.get("token"),
                                 user_id:this.$session.get("id"),
                               },
                               headers: {

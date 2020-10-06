@@ -86,11 +86,10 @@ export default {
      
      get_username:function(){
        axios({
-            method: "post",
+            method: "get",
             url: "http://localhost:8000/get_list_username/",
             data: {
              
-              token: this.$session.get("token")
             },
             headers: {
               Authorization: "Bearer " + this.$session.get("token")

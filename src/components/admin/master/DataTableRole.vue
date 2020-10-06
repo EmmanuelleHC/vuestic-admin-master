@@ -103,7 +103,6 @@ export default {
               url: "http://localhost:8000/compare_data_master_role/",
               data: {
                 role_name:this.role_name,
-                token: this.$session.get("token")
               },
               headers: {
                 Authorization: "Bearer " + this.$session.get("token")
@@ -119,7 +118,6 @@ export default {
                                 role_name:this.role_name,
                                 role_desc:this.role_desc,
                                 role_id:this.role_id,
-                                token: this.$session.get("token"),
                                 user_id:this.$session.get("id"),
                               },
                               headers: {

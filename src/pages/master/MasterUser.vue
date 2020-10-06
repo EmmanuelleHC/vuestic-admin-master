@@ -145,7 +145,6 @@ export default {
             url: "http://localhost:8000/get_resp_user/",
             data: {
               username:username,
-              token: this.$session.get("token")
             },
             headers: {
               Authorization: "Bearer " + this.$session.get("token")
@@ -188,7 +187,6 @@ export default {
               url: "http://localhost:8000/search_user_specific/",
               data: {
                 username:this.username,
-                token: this.$session.get("token")
               },
               headers: {
                 Authorization: "Bearer " + this.$session.get("token")
@@ -206,7 +204,6 @@ export default {
                                 active_flag:this.active_flag,
                                 active_date:this.active_date,
                                 email:this.email,
-                                token: this.$session.get("token"),
                                 user_id:this.$session.get("id"),
                                 resp:this.data_list_user_resp_temp
                               },
@@ -262,7 +259,6 @@ export default {
                                 active_flag:this.active_flag,
                                 active_date:this.active_date,
                                 email:this.email,
-                                token: this.$session.get("token"),
                                 user_id:this.$session.get("id"),
                                 resp:this.data_list_user_resp_temp
                               },
@@ -321,7 +317,6 @@ export default {
             url: "http://localhost:8000/get_list_user_resp_by_role/",
             data: {
               role_id:this.role,
-              token: this.$session.get("token")
             },
             headers: {
               Authorization: "Bearer " + this.$session.get("token")
@@ -351,10 +346,9 @@ export default {
       },
     get_role: function() {
       axios({
-        method: "post",
+        method: "get",
         url: "http://localhost:8000/get_list_role/",
         data: {
-          token: this.$session.get("token")
         },
         headers: {
           Authorization: "Bearer " + this.$session.get("token")

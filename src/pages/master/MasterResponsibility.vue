@@ -120,11 +120,9 @@ export default {
    },
    get_menu:function(){
       axios({
-        method: "post",
+        method: "get",
         url: "http://localhost:8000/get_data_menu/",
         data: {
-          token: this.$session.get("token"),
-
         },
         headers: {
           Authorization: "Bearer " + this.$session.get("token")
@@ -143,10 +141,9 @@ export default {
    },
    get_role: function() {
       axios({
-        method: "post",
+        method: "get",
         url: "http://localhost:8000/get_list_role/",
         data: {
-          token: this.$session.get("token")
         },
         headers: {
           Authorization: "Bearer " + this.$session.get("token")
@@ -165,10 +162,9 @@ export default {
     },
    get_data_master_company(){
       axios({
-                              method: "post",
+                              method: "get",
                               url: "http://localhost:8000/get_data_master_company/",
                               data: {
-                               token:this.$session.get("token")
                               },
                               headers: {
                                 Authorization: "Bearer " + this.$session.get("token")
@@ -207,7 +203,6 @@ export default {
                               method: "post",
                               url: "http://localhost:8000/get_data_cbg_by_company/",
                               data: {
-                               token:this.$session.get("token"),
                                company_name:company_name
                               },
                               headers: {
@@ -243,7 +238,6 @@ export default {
                                 resp_name:this.resp_name,
                                 resp_desc:this.resp_desc,
                                 active_flag:this.active_flag,
-                                token:this.$session.get("token"),
                                 user_id:this.$session.get("id")
                               },
                               headers: {
@@ -273,10 +267,9 @@ export default {
    },
     get_responsibility: function() {
       axios({
-        method: "post",
+        method: "get",
         url: "http://localhost:8000/get_data_master_resp/",
         data: {
-          token: this.$session.get("token")
         },
         headers: {
           Authorization: "Bearer " + this.$session.get("token")

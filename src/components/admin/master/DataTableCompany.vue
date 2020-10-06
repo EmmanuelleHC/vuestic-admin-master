@@ -122,7 +122,6 @@ export default {
                 company_code:this.company_code,
                 company_name:this.company_name,
                 active_flag:this.active_flag,
-                token: this.$session.get("token")
               },
               headers: {
                 Authorization: "Bearer " + this.$session.get("token")
@@ -137,9 +136,7 @@ export default {
                                 company_code:this.company_code,
                                 company_name:this.company_name,
                                 company_id:this.company_id,
-                                active_flag:this.active_flag1,
-                                token: this.$session.get("token"),
-                                user_id:this.$session.get("id"),
+                                active_flag:this.active_flag1,                                user_id:this.$session.get("id"),
                               },
                               headers: {
                                 Authorization: "Bearer " + this.$session.get("token")

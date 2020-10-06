@@ -80,7 +80,6 @@ export default {
                               data: {
                                 role_name:this.role_name,
                                 role_desc:this.role_desc,
-                                token:this.$session.get("token"),
                                 user_id:this.$session.get("id")
                               },
                               headers: {
@@ -109,10 +108,9 @@ export default {
    },
     get_role: function() {
       axios({
-        method: "post",
+        method: "get",
         url: "http://localhost:8000/get_list_role/",
         data: {
-          token: this.$session.get("token")
         },
         headers: {
           Authorization: "Bearer " + this.$session.get("token")
