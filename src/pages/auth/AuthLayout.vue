@@ -2,7 +2,7 @@
   <div class="auth-layout row align-content--center">
     <div class="flex xs12 pa-3 flex-center">
       <router-link class="py-5 flex-center" to="/">
-      <img src="../../assets/icons/logo_idm.png" width="400" height="150"> 
+        <img src="../../assets/icons/logo_idm.png" width="400" height="150">
       </router-link>
     </div>
 
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-//import VaIconVuestic from '../../iconset/VaIconVuestic'
+// import VaIconVuestic from '../../iconset/VaIconVuestic'
 
 const tabs = [
   'login',
@@ -36,7 +36,7 @@ const tabs = [
 
 export default {
   name: 'AuthLayout',
-  //components: { VaIconVuestic },
+  // components: { VaIconVuestic },
   data () {
     return {
       selectedTabIndex: 0,

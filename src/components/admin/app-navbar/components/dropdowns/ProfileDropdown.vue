@@ -41,10 +41,6 @@ export default {
       type: Array,
       default: () => [
         {
-          name: 'profile',
-          redirectTo: '',
-        },
-        {
           name: 'logout',
           redirectTo: 'login',
         },

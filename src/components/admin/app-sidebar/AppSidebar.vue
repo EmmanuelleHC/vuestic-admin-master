@@ -37,12 +37,12 @@
 </template>
 
 <script>
-//import { navigationRoutes } from './NavigationRoutes'
+// import { navigationRoutes } from './NavigationRoutes'
 import AppSidebarLink from './components/AppSidebarLink'
 import AppSidebarLinkGroup from './components/AppSidebarLinkGroup'
 import { ColorThemeMixin } from '../../../services/vuestic-ui'
 
-import axios from "axios"
+import axios from 'axios'
 export default {
   name: 'app-sidebar',
   inject: ['contextConfig'],
@@ -63,12 +63,12 @@ export default {
   },
   data () {
     return {
-      items:[],
-     // items: navigationRoutes.routes,
+      items: [],
+      // items: navigationRoutes.routes,
     }
   },
-  mounted() {
-    this.loadMenu();
+  mounted () {
+    this.loadMenu()
   },
   computed: {
     computedClass () {
@@ -86,31 +86,28 @@ export default {
     hasActiveByDefault (item) {
       return item.children.some(child => child.name === this.$route.name)
     },
-    loadMenu: function() {
+    loadMenu: function () {
       axios({
-        method: "post",
-        url: "http://localhost:8000/get_menu/",
+        method: 'post',
+        url: 'http://localhost:8000/get_menu/',
         data: {
-          resp_id: this.$session.get("resp_id"),
-          token: this.$session.get("token")
+          resp_id: this.$session.get('resp_id'),
+          token: this.$session.get('token'),
         },
         headers: {
-          Authorization: "Bearer " + this.$session.get("token")
-        }
+          Authorization: 'Bearer ' + this.$session.get('token'),
+        },
       })
         .then(response => {
-        
-          this.data = response.data;
+          this.data = response.data
           this.data.forEach(item => {
-            this.items.push(item);
-            
-            
-            });
+            this.items.push(item)
+          })
         })
         .catch(error => {
-          console.log(error.response);
-        });
-    }
+          console.log(error.response)
+        })
+    },
   },
 }
 

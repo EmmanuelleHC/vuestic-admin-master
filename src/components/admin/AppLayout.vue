@@ -25,7 +25,7 @@
         :class="{'app-layout__main--top': isTopBar}"
       >
         <main
-          class="app-layout__main-layout layout fluid gutter--xl"
+          class="app-layout__main-layout   gutter--xl"
           slot="content"
           role="main"
         >
@@ -41,7 +41,7 @@ import AppPageLayout from './AppPageLayout'
 import AppNavbar from './app-navbar/AppNavbar'
 import AppTopbar from './app-topbar/AppTopbar'
 import AppSidebar from './app-sidebar/AppSidebar'
-import {corporateTheme} from 'vuestic-ui/src/services/themes'
+import { corporateTheme } from 'vuestic-ui/src/services/themes'
 import {
   ColorThemeActionsMixin,
   ColorThemeMixin,

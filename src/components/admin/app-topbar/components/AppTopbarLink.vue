@@ -161,7 +161,7 @@ export default {
 
   &__title {
     line-height: 1.5em;
-    margin-left: 0.5rem;
+    margin-left: 0.1rem;
 
     @include media-breakpoint-down(sm) {
       display: none;

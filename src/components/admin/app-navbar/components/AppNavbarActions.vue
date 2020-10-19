@@ -1,6 +1,6 @@
 <template>
   <div class="app-navbar-actions">
-   <settings-dropdown
+    <settings-dropdown
       :is-top-bar.sync="isTopBarProxy"
       class="app-navbar-actions__item"
     />

@@ -19,10 +19,9 @@
           :color="contextConfig.invertedColor ? $themes.gray : 'white'"
         />
 
-        
       </div>
       <div class="app-navbar__center lg5 md4">
-        
+
       </div>
       <app-navbar-actions
         class="app-navbar__actions md5 lg4"
@@ -38,7 +37,6 @@
 </template>
 
 <script>
-import VaIconVuestic from '../../../iconset/VaIconVuestic'
 import VaIconMenu from '../../../iconset/VaIconMenu'
 import VaIconMenuCollapsed from '../../../iconset/VaIconMenuCollapsed'
 import AppNavbarActions from './components/AppNavbarActions'
@@ -49,7 +47,6 @@ export default {
   mixins: [ColorThemeMixin],
   inject: ['contextConfig'],
   components: {
-    VaIconVuestic,
     VaIconMenu,
     VaIconMenuCollapsed,
     AppNavbarActions,
@@ -66,10 +63,19 @@ export default {
   },
   data () {
     return {
-      userName: 'Vasili S',
+      userName: '',
     }
   },
+  mounted () {
+    this.get_username();
+  },
+  methods: {
+    get_username () {
+      this.userName = this.$session.get('username');
+    },
+  },
   computed: {
+
     isTopBarProxy: {
       get () {
         return this.isTopBar

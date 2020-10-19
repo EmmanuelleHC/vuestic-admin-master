@@ -43,8 +43,8 @@ export default {
       return 'CORPORATE'
     },
     textColor () {
-     // return this.contextConfig.invertedColor ? '#6E85E8' : '#E4FF32'
-     return '#6E85E8'
+      // return this.contextConfig.invertedColor ? '#6E85E8' : '#E4FF32'
+      return '#6E85E8'
     },
   },
 }

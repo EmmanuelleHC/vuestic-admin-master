@@ -40,10 +40,13 @@
 </template>
 
 <script>
+
+import axios from 'axios'
 import AppTopbarLink from './components/AppTopbarLink'
 import AppTopbarLinkGroup from './components/AppTopbarLinkGroup'
 import AppTopbarLinkGroupItem from './components/AppTopbarLinkGroupItem'
-import { navigationRoutes } from '../app-sidebar/NavigationRoutes'
+
+// import { navigationRoutes } from '../app-sidebar/NavigationRoutes'
 import { ColorThemeMixin } from '../../../services/vuestic-ui'
 
 export default {
@@ -73,12 +76,37 @@ export default {
   },
   data () {
     return {
-      items: navigationRoutes.routes,
+      items: [],
     }
+  },
+  mounted () {
+    this.loadMenu()
   },
   methods: {
     hasActiveByDefault (item) {
       return item.children.some(child => child.name === this.$route.name)
+    },
+    loadMenu: function () {
+      axios({
+        method: 'post',
+        url: 'http://localhost:8000/get_menu/',
+        data: {
+          resp_id: this.$session.get('resp_id'),
+          token: this.$session.get('token'),
+        },
+        headers: {
+          Authorization: 'Bearer ' + this.$session.get('token'),
+        },
+      })
+        .then(response => {
+          this.data = response.data
+          this.data.forEach(item => {
+            this.items.push(item)
+          })
+        })
+        .catch(error => {
+          console.log(error.response)
+        })
     },
   },
 }

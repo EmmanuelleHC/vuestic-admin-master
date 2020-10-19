@@ -16,8 +16,6 @@
       :error-messages="passwordErrors"
     />
 
-  
-
     <div class="d-flex justify--center mt-3">
       <va-button type="submit" class="my-0">{{ $t('auth.login') }}</va-button>
     </div>
@@ -26,7 +24,7 @@
 
 <script>
 
-import axios from "axios";
+import axios from 'axios'
 export default {
   name: 'login',
   data () {
@@ -48,51 +46,48 @@ export default {
       this.usernameErrors = this.username ? [] : ['Username is required']
       this.passwordErrors = this.password ? [] : ['Password is required']
       if (!this.formReady) {
-        return
-      }else{
-        let formData = new FormData();
-        formData.append("username", this.username.trim());
-        formData.append("password", this.password);
+
+      } else {
+        const formData = new FormData()
+        formData.append('username', this.username.trim())
+        formData.append('password', this.password)
 
         const options = {
-          url: "http://localhost:8000/auth/login",
-          method: "post",
+          url: 'http://localhost:8000/auth/login',
+          method: 'post',
           headers: {
-            "Content-Type": "multipart/form-data"
+            'Content-Type': 'multipart/form-data',
           },
-          data: formData
-        };
+          data: formData,
+        }
 
         axios(options)
           .then(response => {
-            const token = response.data.token;
+            const token = response.data.token
             if (token) {
-              this.$session.set("role", response.data.role_id);
-              this.$session.set("token", response.data.token);
-              this.$session.set("id", response.data.user_id);
-              this.$session.set("resp_id", response.data.resp_id);
-              if (response.data.role_id == 1) {
-                console.log("Login as Admin");
-                 this.$router.push({ name: 'Admin' })
-                
-              } else if (response.data.role_id == 2) {
-                console.log("Login as User");
-                this.$router.push({ name: "User" });
+              this.$session.set('role', response.data.role_id)
+              this.$session.set('token', response.data.token)
+              this.$session.set('id', response.data.user_id)
+              this.$session.set('resp_id', response.data.resp_id)
+               this.$session.set('username', response.data.username)
+              if (response.data.role_id === 1) {
+                console.log('Login as Admin')
+                this.$router.push({ name: 'Admin' })
+              } else if (response.data.role_id === 2) {
+                console.log('Login as User')
+                this.$router.push({ name: 'User' })
               }
-              window.location.reload();
+              // window.location.reload();
             }
           })
           .catch(e => {
             alert(
               e +
-                "\n" +
-                "username / password yang dimasukkan salah."
-            );
-          });
-      
+                '\n' +
+                'username / password yang dimasukkan salah.',
+            )
+          })
       }
-
-     
     },
   },
 }
