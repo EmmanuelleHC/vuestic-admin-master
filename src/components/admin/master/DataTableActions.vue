@@ -9,7 +9,7 @@
       <v-toolbar
         flat
       >
-
+      Master User
         <v-divider
           class="mx-4"
           inset

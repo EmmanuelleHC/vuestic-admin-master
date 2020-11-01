@@ -1,5 +1,7 @@
 <template>
-  <form @submit.prevent="onsubmit">
+    
+<div>
+   <form @submit.prevent="onsubmit">
     <va-input
       v-model="username"
       type="text"
@@ -20,10 +22,24 @@
       <va-button type="submit" class="my-0">{{ $t('auth.login') }}</va-button>
     </div>
   </form>
+  <v-layout row justify-center>
+      <v-dialog v-model="loading" persistent fullscreen 
+      >
+        <v-container fill-height>
+          <v-layout row justify-center align-center>
+            <v-progress-circular indeterminate :size="70" :width="7" color="purple"></v-progress-circular>
+          </v-layout>
+        </v-container>
+      </v-dialog>
+    </v-layout>
+    </div>
+      
+
 </template>
 
 <script>
-
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+import 'sweetalert2/src/sweetalert2.scss'
 import axios from 'axios'
 export default {
   name: 'login',
@@ -31,6 +47,11 @@ export default {
     return {
       username: '',
       password: '',
+      dialog: false,
+      loading: false,
+      color: '#303030',
+      sound: true,
+      widgets: false,
       keepLoggedIn: false,
       usernameErrors: [],
       passwordErrors: [],
@@ -43,6 +64,7 @@ export default {
   },
   methods: {
     onsubmit () {
+      this.loading=true
       this.usernameErrors = this.username ? [] : ['Username is required']
       this.passwordErrors = this.password ? [] : ['Password is required']
       if (!this.formReady) {
@@ -69,23 +91,31 @@ export default {
               this.$session.set('token', response.data.token)
               this.$session.set('id', response.data.user_id)
               this.$session.set('resp_id', response.data.resp_id)
-               this.$session.set('username', response.data.username)
+              this.$session.set('username', response.data.username)
               if (response.data.role_id === 1) {
-                console.log('Login as Admin')
-                this.$router.push({ name: 'Admin' })
+
+                  this.$router.push({ name: 'Admin' })
+                this.loading=false
               } else if (response.data.role_id === 2) {
-                console.log('Login as User')
                 this.$router.push({ name: 'User' })
+                this.loading=false
               }
               // window.location.reload();
             }
           })
           .catch(e => {
-            alert(
-              e +
-                '\n' +
-                'username / password yang dimasukkan salah.',
-            )
+             Swal.fire({
+                  title: 'Error!',
+                  text: 'username / password yang dimasukkan salah',
+                  icon: 'error',
+                })
+             console.log(e)
+            // alert(
+            //   e +
+            //     '\n' +
+            //     'username / password yang dimasukkan salah.',
+            // )
+            this.loading=false
           })
       }
     },
@@ -93,5 +123,3 @@ export default {
 }
 </script>
 
-<style lang="scss">
-</style>

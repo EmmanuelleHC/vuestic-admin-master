@@ -6,7 +6,6 @@
       :items="data_user"
       :single-select="singleSelect"
       item-key="USERNAME"
-      show-select
       @click:row="select"
       class="elevation-1"
     >

@@ -67,11 +67,11 @@ export default {
     }
   },
   mounted () {
-    this.get_username();
+    this.get_username()
   },
   methods: {
     get_username () {
-      this.userName = this.$session.get('username');
+      this.userName = this.$session.get('username')
     },
   },
   computed: {

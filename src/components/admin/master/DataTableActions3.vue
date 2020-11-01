@@ -6,7 +6,6 @@
       :items="data_list_user_resp"
       :single-select="singleSelect"
       item-key="RESPONSIBILITY_ID"
-      show-select
       @click:row="choose"
       class="elevation-1"
     >

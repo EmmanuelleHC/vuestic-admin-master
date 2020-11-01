@@ -53,7 +53,6 @@ import {
 } from '../../router/index.js'
 import axios from 'axios'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-
 import 'sweetalert2/src/sweetalert2.scss'
 import DataTableActions from '../../components/admin/master/DataTableActions.vue'
 import DataTableActions2 from '../../components/admin/master/DataTableActions2.vue'

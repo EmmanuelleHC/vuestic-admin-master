@@ -2,7 +2,7 @@
   <div class="master-resp">
     <va-card>
       <div class="justify center">
-        <data-table-responsibility :listResponsibility="listResponsibility" class="mb-4" />
+        <data-table-employee :listEmployee="listEmployee" class="mb-4" />
       </div>
     </va-card>
   </div>
@@ -11,15 +11,15 @@
 <script>
 import axios from 'axios'
 import 'sweetalert2/src/sweetalert2.scss'
-import DataTableResponsibility from '../../components/admin/master/DataTableResponsibility.vue'
+import DataTableEmployee from '../../components/admin/master/DataTableEmployee.vue'
 export default {
   name: 'master-resp',
   components: {
-    DataTableResponsibility,
+    DataTableEmployee,
   },
   data () {
     return {
-      listResponsibility: [],
+      listEmployee: [],
     }
   },
   mounted () {

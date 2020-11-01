@@ -88,6 +88,14 @@ export default new Router({
               },
             },
             {
+              name: 'Menu Management',
+              path: 'MenuManagement',
+              component: () => import('../pages/master/MasterMenu.vue'),
+              meta: {
+                wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Charts',
+              },
+            },
+            {
               name: 'User Management',
               path: 'UserManagement',
               component: () => import('../pages/master/MasterUser.vue'),
@@ -112,14 +120,6 @@ export default new Router({
               },
             },
             {
-              name: 'User Management',
-              path: 'UserManagement',
-              component: () => import('../pages/master/MasterUser.vue'),
-              meta: {
-                wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Progress-Bars',
-              },
-            },
-            {
               name: 'Company Management',
               path: 'CompanyManagement',
               component: () => import('../pages/master/MasterCompany.vue'),
@@ -128,13 +128,22 @@ export default new Router({
               },
             },
             {
-              name: 'Menu Management',
-              path: 'MenuManagement',
-              component: () => import('../pages/master/MasterMenu.vue'),
+              name: 'Employee Management',
+              path: 'EmployeeManagement',
+              component: () => import('../pages/master/MasterEmployee.vue'),
               meta: {
                 wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Progress-Bars',
               },
             },
+            {
+              name: 'Approval Management',
+              path: 'ApprovalManagement',
+              component: () => import('../pages/master/MasterApproval.vue'),
+              meta: {
+                wikiLink: 'https://github.com/epicmaxco/vuestic-admin/wiki/Progress-Bars',
+              },
+            },
+            
           ],
         },
       ],
