@@ -1,5 +1,11 @@
 <template>
   <va-card>
+    <div class="justify center">
+       <div v-if="loading">
+       
+          <loader />
+        </div>
+    </div>
     <v-data-table
       v-model="selected"
       :headers="fields"
@@ -127,7 +133,7 @@
 <script>
 import axios from 'axios'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-
+import Loader from '../../../components/statistics/progress-bars/Widgets/Loading.vue'
 import 'sweetalert2/src/sweetalert2.scss'
 export default {
   data () {
@@ -139,6 +145,7 @@ export default {
       listCompany: [],
       title_modal: '',
       isFound: false,
+      loading:false,
       pindah: [],
       selected: [],
       singleSelect: true,
@@ -162,6 +169,10 @@ export default {
     this.get_role()
     this.get_menu()
     this.get_data_master_company()
+  },
+  components: {
+    Loader,
+   
   },
   computed: {
     fields () {
@@ -228,7 +239,7 @@ export default {
     get_menu: function () {
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_data_menu/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_data_menu/',
         data: {
         },
         headers: {
@@ -268,7 +279,7 @@ export default {
     get_role: function () {
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_list_role/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_list_role/',
         data: {
         },
         headers: {
@@ -289,7 +300,7 @@ export default {
     get_data_master_company () {
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_data_master_company/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_data_master_company/',
         data: {
         },
         headers: {
@@ -308,6 +319,7 @@ export default {
         })
     },
     submit () {
+      this.loading=true
       if (this.resp_name !== '' && this.resp_desc !== '' && this.active_flag !== '') {
         if (this.active_flag === true) {
           this.active_flag1 = 'Y'
@@ -317,7 +329,7 @@ export default {
         if (this.action_edit === false) {
              axios({
             method: 'post',
-            url: 'http://localhost:8000/compare_data_resp/',
+            url: 'http://sd6webdev.indomaret.lan:8000/compare_data_resp/',
             data: {
               resp_id: this.resp_id,
               resp_name: this.resp_name,
@@ -337,10 +349,11 @@ export default {
               })
               this.showBranchModal = true
               this.action_edit = false
+              this.loading=false
             } else {
            axios({
             method: 'post',
-            url: 'http://localhost:8000/insert_data_resp/',
+            url: 'http://sd6webdev.indomaret.lan:8000/insert_data_resp/',
             data: {
               company: this.company,
               branch: this.branch,
@@ -363,6 +376,7 @@ export default {
               })
               this.showResponsibilityModal = false
               this.get_responsibility()
+              this.loading=false
             //  console.log(response.data)
             })
             .catch(error => {
@@ -374,7 +388,7 @@ export default {
         } else {
           axios({
             method: 'post',
-            url: 'http://localhost:8000/compare_data_resp/',
+            url: 'http://sd6webdev.indomaret.lan:8000/compare_data_resp/',
             data: {
               resp_id: this.resp_id,
               resp_name: this.resp_name,
@@ -394,10 +408,11 @@ export default {
               })
               this.showBranchModal = true
               this.action_edit = true
+              this.loading=false
             } else {
              axios({
             method: 'post',
-            url: 'http://localhost:8000/update_data_resp/',
+            url: 'http://sd6webdev.indomaret.lan:8000/update_data_resp/',
             data: {
 
               resp_id: this.resp_id,
@@ -418,6 +433,7 @@ export default {
                 icon: 'success',
               })
               this.get_responsibility()
+              this.loading=false
               console.log(response.data)
             })
             .catch(error => {
@@ -435,6 +451,7 @@ export default {
           text: 'Harap lengkapi datanya .',
           icon: 'error',
         })
+        this.loading=false
       }
     },
     edit (data) {
@@ -462,7 +479,7 @@ export default {
 
       axios({
         method: 'post',
-        url: 'http://localhost:8000/get_data_cbg_by_company/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_data_cbg_by_company/',
         data: {
           company_id: this.company,
         },
@@ -483,9 +500,10 @@ export default {
         })
     },
     get_responsibility: function () {
+      this.loading=true
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_data_master_resp/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_data_master_resp/',
         data: {
         },
         headers: {
@@ -498,6 +516,7 @@ export default {
           this.data.forEach(item => {
             this.listResponsibility.push({ RESPONSIBILITY_ID: item.RESPONSIBILITY_ID, COMPANY: item.COMPANY_NAME, CABANG: item.BRANCH_NAME, ROLE: item.ROLE, MENU: item.MENU, RESP: item.RESPONSIBILITY_NAME, RESP_DESC: item.RESPONSIBILITY_DESC, ACTIVE: item.ACTIVE_FLAG, ACTIVE_DATE: item.ACTIVE_DATE, INACTIVE_DATE: item.INACTIVE_DATE })
           })
+          this.loading=false
         })
         .catch(error => {
           console.log(error.response)

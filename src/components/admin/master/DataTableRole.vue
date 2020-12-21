@@ -1,5 +1,11 @@
 <template>
   <va-card>
+    <div class="justify center">
+       <div v-if="loading">
+       
+          <loader />
+        </div>
+    </div>
     <v-data-table
       v-model="selected"
       :headers="fields"
@@ -77,7 +83,7 @@
 <script>
 import axios from 'axios'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-
+import Loader from '../../../components/statistics/progress-bars/Widgets/Loading.vue'
 import 'sweetalert2/src/sweetalert2.scss'
 export default {
   data () {
@@ -87,6 +93,7 @@ export default {
       pindah: [],
       formTitle: 'Add New Role',
       isFound: false,
+      loading:false,
       singleSelect: true,
       selected: [],
       role_id: '',
@@ -100,6 +107,10 @@ export default {
   },
   created () {
     this.get_role()
+  },
+  components: {
+    Loader,
+   
   },
   computed: {
     fields () {
@@ -127,11 +138,12 @@ export default {
       this.role_id = ''
     },
     submit () {
+      this.loading=true
       if (this.role_name !== '' && this.role_desc !== '') {
         if (this.action_edit === false) {
            axios({
             method: 'post',
-            url: 'http://localhost:8000/compare_data_master_role/',
+            url: 'http://sd6webdev.indomaret.lan:8000/compare_data_master_role/',
             data: {
               role_name: this.role_name,
               role_id: this.role_id,
@@ -145,7 +157,7 @@ export default {
               if (response.data === 0) {
                 axios({
             method: 'post',
-            url: 'http://localhost:8000/insert_role/',
+            url: 'http://sd6webdev.indomaret.lan:8000/insert_role/',
             data: {
               role_name: this.role_name,
               role_desc: this.role_desc,
@@ -163,6 +175,7 @@ export default {
               })
               this.showRoleModal = false
               this.get_role()
+              this.loading=false
               console.log(response.data)
             })
             .catch(error => {
@@ -174,13 +187,14 @@ export default {
           text: 'Data Role gagal ditambahkan.',
           icon: 'error',
         })
+               this.loading=false
             }
             })
           
         } else {
           axios({
             method: 'post',
-            url: 'http://localhost:8000/compare_data_master_role/',
+            url: 'http://sd6webdev.indomaret.lan:8000/compare_data_master_role/',
             data: {
               role_name: this.role_name,
               role_id: this.role_id,
@@ -194,7 +208,7 @@ export default {
               if (response.data === 0) {
                 axios({
                   method: 'post',
-                  url: 'http://localhost:8000/update_role/',
+                  url: 'http://sd6webdev.indomaret.lan:8000/update_role/',
                   data: {
                     role_name: this.role_name,
                     role_desc: this.role_desc,
@@ -213,6 +227,7 @@ export default {
                       icon: 'success',
                     })
                     this.get_role()
+                    this.loading=false
                     console.log(response.data)
                   })
                   .catch(error => {
@@ -220,10 +235,11 @@ export default {
                   })
               }else{
                  Swal.fire({
-          title: 'Error!',
-          text: 'Data Role gagal diupdate.',
-          icon: 'error',
-        })
+                  title: 'Error!',
+                  text: 'Data Role gagal diupdate.',
+                  icon: 'error',
+                })
+                 this.loading=false
               }
             })
         }
@@ -233,6 +249,7 @@ export default {
           text: 'Harap lengkapi datanya .',
           icon: 'error',
         })
+        this.loading=false
       }
     },
     edit (data) {
@@ -244,9 +261,10 @@ export default {
       this.role_id = data.ID
     },
     get_role: function () {
+      this.loading=true
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_list_role/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_list_role/',
         data: {
         },
         headers: {
@@ -259,6 +277,7 @@ export default {
           this.data.forEach(item => {
             this.listRole.push({ ROLE_NAME: item.ROLE_NAME, ID: item.ROLE_ID, ROLE_DESC: item.ROLE_DESC })
           })
+          this.loading=false
         })
         .catch(error => {
           console.log(error.response)

@@ -89,7 +89,7 @@ export default {
     loadMenu: function () {
       axios({
         method: 'post',
-        url: 'http://localhost:8000/get_menu/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_menu/',
         data: {
           resp_id: this.$session.get('resp_id'),
           token: this.$session.get('token'),

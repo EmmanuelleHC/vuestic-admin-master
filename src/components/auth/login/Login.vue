@@ -25,6 +25,7 @@
   <v-layout row justify-center>
       <v-dialog v-model="loading" persistent fullscreen 
       >
+
         <v-container fill-height>
           <v-layout row justify-center align-center>
             <v-progress-circular indeterminate :size="70" :width="7" color="purple"></v-progress-circular>
@@ -50,8 +51,6 @@ export default {
       dialog: false,
       loading: false,
       color: '#303030',
-      sound: true,
-      widgets: false,
       keepLoggedIn: false,
       usernameErrors: [],
       passwordErrors: [],
@@ -75,7 +74,7 @@ export default {
         formData.append('password', this.password)
 
         const options = {
-          url: 'http://localhost:8000/auth/login',
+          url: 'http://sd6webdev.indomaret.lan:8000/auth/login',
           method: 'post',
           headers: {
             'Content-Type': 'multipart/form-data',

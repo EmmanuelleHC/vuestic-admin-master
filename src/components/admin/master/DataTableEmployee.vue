@@ -1,5 +1,11 @@
 <template>
   <va-card>
+    <div class="justify center">
+       <div v-if="loading">
+       
+          <loader />
+        </div>
+    </div>
     <v-data-table
       v-model="selected"
       :headers="fields"
@@ -125,7 +131,7 @@
 <script>
 import axios from 'axios'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-
+import Loader from '../../../components/statistics/progress-bars/Widgets/Loading.vue'
 import 'sweetalert2/src/sweetalert2.scss'
 export default {
   data () {
@@ -134,6 +140,7 @@ export default {
       listUsername: [],
       listBranch: [],
       listRole: [],
+      loading:false,
       listCompany: [],
       emailRules: [
         v => !!v || 'E-mail is required',
@@ -162,6 +169,10 @@ export default {
   },
   created () {
     this.get_employee()
+   
+  },
+  components: {
+    Loader,
    
   },
   computed: {
@@ -244,6 +255,7 @@ export default {
       this.get_data_cbg_by_company()
     },
     submit () {
+       this.loading=true
        if (this.emp_name!=='' && this.emp_num !== '' && this.emp_desc !== '' && this.email_user !== '' && this.username!=='' && this.company!=='' && this.branch!=='' && this.active_flag!=='') {
         if (this.active_flag === true) {
           this.active_flag1 = 'Y'
@@ -253,7 +265,7 @@ export default {
         if (this.action_edit === false) {
           axios({
             method: 'post',
-            url: 'http://localhost:8000/compare_data_emp/',
+            url: 'http://sd6webdev.indomaret.lan:8000/compare_data_emp/',
             data: {
             
               emp_name: this.emp_name,
@@ -271,12 +283,13 @@ export default {
                 text: 'Employee gagal ditambahkan.',
                 icon: 'error',
               })
+              this.loading=false
               this.showEmployeeModal = true
               this.action_edit = false
             } else {
              axios({
             method: 'post',
-            url: 'http://localhost:8000/insert_data_emp/',
+            url: 'http://sd6webdev.indomaret.lan:8000/insert_data_emp/',
             data: {
               emp_num: this.emp_num,
               emp_name: this.emp_name,
@@ -301,6 +314,7 @@ export default {
               })
               this.showEmployeeModal = false
               this.get_employee()
+              this.loading=false
             //  console.log(response.data)
             })
             .catch(error => {
@@ -311,7 +325,7 @@ export default {
         } else {
           axios({
             method: 'post',
-            url: 'http://localhost:8000/compare_data_emp/',
+            url: 'http://sd6webdev.indomaret.lan:8000/compare_data_emp/',
             data: {
               emp_id: this.emp_id,
               emp_name: this.emp_name,
@@ -331,10 +345,11 @@ export default {
               })
               this.showEmployeeModal = true
               this.action_edit = true
+              this.loading=false
             } else {
              axios({
             method: 'post',
-            url: 'http://localhost:8000/update_data_emp/',
+            url: 'http://sd6webdev.indomaret.lan:8000/update_data_emp/',
             data: {
               emp_id:this.emp_id,
               emp_num: this.emp_num,
@@ -360,6 +375,7 @@ export default {
                 icon: 'success',
               })
               this.get_employee()
+              this.loading=false
               console.log(response.data)
             })
             .catch(error => {
@@ -377,6 +393,7 @@ export default {
           text: 'Harap lengkapi datanya .',
           icon: 'error',
         })
+        this.loading=false
       }
     },
     edit (data) {
@@ -400,9 +417,10 @@ export default {
     
     },
     get_employee: function () {
+      this.loading=true
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_data_master_employee/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_data_master_employee/',
         data: {
         },
         headers: {
@@ -415,6 +433,7 @@ export default {
           this.data.forEach(item => {
             this.listEmployee.push({ ID: item.ID, EMP_NAME: item.EMP_NAME, EMP_NUMBER: item.EMP_NUMBER, EMP_DESCRIPTION: item.EMP_DESCRIPTION, EMAIL_USER: item.EMAIL_USER, EMAIL_OTP: item.EMAIL_OTP, COMPANY: item.COMPANY, COMPANY_ID: item.COMPANY_ID,ORG_ID:item.ORG_ID,BRANCH:item.BRANCH,ACTIVE_FLAG:item.ACTIVE_FLAG,USERNAME:item.USERNAME,USER_ID:item.USER_ID, ACTIVE_DATE: item.ACTIVE_DATE, INACTIVE_DATE: item.INACTIVE_DATE })
           })
+          this.loading=false
         })
         .catch(error => {
           console.log(error.response)
@@ -423,7 +442,7 @@ export default {
     get_username_existing: function (){
        axios({
         method: 'get',
-        url: 'http://localhost:8000/get_username_existing/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_username_existing/',
         data: {
         },
         headers: {
@@ -444,7 +463,7 @@ export default {
     update_username: function (){
        axios({
         method: 'post',
-        url: 'http://localhost:8000/get_username_existing2/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_username_existing2/',
         data: {
           user_id:this.username
         },
@@ -466,7 +485,7 @@ export default {
     get_data_master_company () {
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_data_master_company/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_data_master_company/',
         data: {
         },
         headers: {
@@ -488,7 +507,7 @@ export default {
 
       axios({
         method: 'post',
-        url: 'http://localhost:8000/get_data_cbg_by_company/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_data_cbg_by_company/',
         data: {
           company_id: this.company,
         },

@@ -1,7 +1,5 @@
-
 <template>
   <v-app>
-
     <v-card class="justify-center">
       <v-card-title>
         <v-text-field
@@ -39,9 +37,7 @@
           {{ formatDate(item.P3AT_DATE) }}
         </template>
 
-        <template v-slot:item.EFFECTIVE_DATE="{ item }">
-          {{ formatDate(item.EFFECTIVE_DATE) }}
-        </template>
+      
         <template v-slot:item.actions="{ item }">
           <v-btn color="primary" dark class="mb-2" @click="detail(item)">
             Detail
@@ -50,12 +46,38 @@
       </v-data-table>
       <v-dialog
         v-model="dialog2"
-        scrollable
+     
         fullscreen
       >
+      <div class="justify center">
+
+       <div v-if="loading">
+       
+          <loader />
+        </div>
+      </div>
 
         <v-card>
-          <v-card-title>Detail P3AT</v-card-title>
+         <v-toolbar>
+                
+                  <v-app-bar-nav-icon></v-app-bar-nav-icon>
+                  <v-toolbar-title>Detail P3AT</v-toolbar-title>
+                       <v-spacer></v-spacer>
+                    <v-spacer></v-spacer>
+                    <v-spacer></v-spacer>
+                    <v-spacer></v-spacer>
+                 <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="dialog2 = false"
+                >
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+
+            
+          </v-btn>
+              </v-toolbar>
+          
           <v-divider></v-divider>
           <v-row justify="center">
             <v-col col-md-6>
@@ -78,7 +100,7 @@
                     </tr>
                   </table>
 
-                  <table style="display: inline-block;" >
+                  <table style="display: inline-block;""  >
                     <tr><td><br>  <br></td>
                       <td><b>Total Asset Qty</b></td><td><b>:</b></td>
                       <td><b>{{total_qty}}</b></td>
@@ -111,16 +133,37 @@
                           sort-by="ID"
                           class="elevation-1"
                         >
+                         <template v-slot:item.ASSET_PRICE="{ item }">
+          {{ formatPrice(item.ASSET_PRICE) }}
+        </template>
+                      <template v-slot:item.BOOKS_PRICE="{ item }">
+          {{ formatPrice(item.BOOKS_PRICE) }}
+        </template>
+                       <template v-slot:item.COST_REMOVAL="{ item }">
+          {{ formatPrice(item.COST_REMOVAL) }}
+        </template>
                         </v-data-table>
                       </div>
                     </v-col>
                   </v-row >
                 </v-card-text>
 
+
                 <v-card-text style="height: 400px;">
                   <v-row>
                     <v-col>
                       <v-card-title>Info</v-card-title>
+                       <div>
+                        <v-btn
+                          class="ma-2"
+                          color="success"
+                          @click="print_pdf()"
+                        >
+                          Print PDF
+                        </v-btn>
+
+                       </div>
+                       
                       <div v-if="need_approve">
 
                         <v-btn
@@ -209,16 +252,7 @@
               <v-spacer></v-spacer>
               <v-spacer></v-spacer>
 
-              <v-card-actions>
-                <v-btn
-                  color="blue darken-1"
-                  text
-                  @click="dialog2 = false"
-                >
-                  Close
-                </v-btn>
-
-              </v-card-actions>
+             
             </v-col>
           </v-row >
 
@@ -234,6 +268,8 @@ import moment from 'moment'
 import axios from 'axios'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import 'sweetalert2/src/sweetalert2.scss'
+import Loader from '../../../components/statistics/progress-bars/Widgets/Loading.vue'
+import jsPDF from 'jspdf'
 export default {
   data: () => ({
     need_approve: false,
@@ -247,6 +283,7 @@ export default {
     loader: null,
     otp: '',
     loadingApprove: false,
+    loading:false,
     generateOtp: false,
     loadingReject: false,
     p3at_date: '',
@@ -267,49 +304,55 @@ export default {
       { text: 'Alasan', value: 'REASON_APPROVAL' },
     ],
     headers: [
-      { text: 'P3AT Number', value: 'P3AT_NUMBER' },
-      { text: 'P3AT Date', value: 'P3AT_DATE', formatter: 'formatDate' },
+      { text: 'No  P3AT', value: 'P3AT_NUMBER' },
+      { text: 'Tanggal P3AT', value: 'P3AT_DATE', formatter: 'formatDate' },
       { text: 'Total Asset Qty', value: 'TOTAL_QTY' },
-      { text: 'Total Asset Price', value: 'TOTAL_ASSET_PRICE', align: 'right', formatter: 'formatPrice' },
+      { text: 'Total Nilai Perolehan', value: 'TOTAL_ASSET_PRICE', align: 'right', formatter: 'formatPrice' },
       {
         text: 'Total of Books Price',
         value: 'TOTAL_BOOKS_PRICE',
         align: 'right',
       },
       {
-        text: 'Total of Cost Removal',
+        text: 'Total Harga Jual Dasar',
         value: 'TOTAL_COST_REMOVAL',
         align: 'right',
         formatter: 'formatPrice',
       },
       { text: 'Status', value: 'STATUS' },
-      { text: 'Effective Date', value: 'EFFECTIVE_DATE' },
       { text: 'Actions', value: 'actions', sortable: false },
     ],
     headers2: [
-      { text: 'Asset Number', value: 'ASSET_NUMBER' },
-      { text: 'Asset Price', value: 'ASSET_PRICE', align: 'right' },
-      { text: 'Asset Location', value: 'ASSET_LOCATION' },
-      { text: 'Asset Qty', value: 'QTY_ASSET' },
+      { text: 'Kode AT', value: 'ASSET_NUMBER' },
+      { text: 'Nama Barang', value: 'ASSET_NAME' },
+      { text: 'Qty', value: 'QTY_ASSET' },
+      { text: 'Pemakai', value: 'PEMAKAI' },
+      { text: 'Lokasi', value: 'ASSET_LOCATION' },
+      { text: 'Tgl Perolehan', value: 'EFFECTIVE_DATE', formatter: 'formatDate' },
+      { text: 'Nilai Perolehan', value: 'ASSET_PRICE', align: 'right',  formatter: 'formatPrice' },
       {
-        text: 'Books Price',
+        text: 'Jumlah Tercatat',
         value: 'BOOKS_PRICE',
         align: 'right',
         formatter: 'formatPrice',
       },
+      { text: 'Alasan P3AT', value: 'STATUS' },  
       {
-        text: 'Cost Removal',
-        value: 'COST_REMOVAL',
+        text: 'Harga Jual + Dasar',
+        value: 'COST_OF_REMOVAL',
         align: 'right',
+        formatter: 'formatPrice',
       },
-      { text: 'Status', value: 'STATUS' },
-    ],
+      ],
   }),
   props: {
     data_list_inq_p3at: Array,
   },
   computed: {},
-
+  components: {
+    Loader,
+   
+  },
   created () {},
   watch: {
     loader () {
@@ -327,15 +370,56 @@ export default {
       else if (status === 'REJECTED') return 'red'
       else return 'green'
     },
+    print_pdf(){
+      let pdfName='test';
+      var doc=new jsPDF();
+      doc.text('Hello World',10,10);
+      doc.save(pdfName+'.pdf');
+/*
+ 
+        axios({
+        method: 'post',
+        url: 'http://sd6webdev.indomaret.lan:8000/print_report',
+        data: {
+          p3at_number: this.p3at_number,
+        },
+        headers: {
+          Authorization: 'Bearer ' + this.$session.get('token'),
+
+
+         
+        },
+      }).then((response) => {
+                alert('MASUK');
+
+             
+               console.log(response);
+                    //  const url = window.URL.createObjectURL(new Blob([response.data],{ type: 'application/pdf' }));
+                      //window.open(url);
+                     
+            }).catch(function(error){
+                  console.log(error);
+                 Swal.fire({
+                  title:'Peringatan',
+                  icon :'warning',
+                  text:'Report tidak bisa dicetak.'
+              });
+        });
+
+*/
+
+    },
     genNewOtp () {
+   
       axios({
         method: 'post',
-        url: 'http://localhost:8000/generate_otp/',
+        url: 'http://sd6webdev.indomaret.lan:8000/generate_otp/',
         data: {
           user_id: this.$session.get('id'),
         },
         headers: {
           Authorization: 'Bearer ' + this.$session.get('token'),
+         
         },
       })
         .then((response) => {
@@ -348,12 +432,13 @@ export default {
         })
     },
     approve () {
+      this.loading=true
       if (this.action === false) {
         this.disableReject = true
         this.showOTP = true
         axios({
           method: 'post',
-          url: 'http://localhost:8000/cek_otp/',
+          url: 'http://sd6webdev.indomaret.lan:8000/cek_otp/',
           data: {
             user_id: this.$session.get('id'),
 
@@ -364,9 +449,10 @@ export default {
         })
           .then((response) => {
             if (response.data !== 0) {
+
               axios({
                 method: 'post',
-                url: 'http://localhost:8000/get_last_otp/',
+                url: 'http://sd6webdev.indomaret.lan:8000/get_last_otp/',
                 data: {
                   user_id: this.$session.get('id'),
 
@@ -378,16 +464,21 @@ export default {
                 .then((response) => {
                   this.referenceNum = response.data
                   this.action = true
+                  this.loading=false
                 })
             } else {
+
+              this.action = true
               this.genNewOtp()
+              this.loading=false
             }
           })
       } else {
         this.loadingApprove = true
-        axios({
+        if(this.alasan.length >=2){
+             axios({
           method: 'post',
-          url: 'http://localhost:8000/submit_otp/',
+          url: 'http://sd6webdev.indomaret.lan:8000/submit_otp/',
           data: {
 
             user_id: this.$session.get('id'),
@@ -403,7 +494,7 @@ export default {
             if (response.data.message === 'berhasil verifikasi') {
               axios({
                 method: 'post',
-                url: 'http://localhost:8000/approve_p3at/',
+                url: 'http://sd6webdev.indomaret.lan:8000/approve_p3at/',
                 data: {
                   p3at_number: this.p3at_number,
                   user_id: this.$session.get('id'),
@@ -426,26 +517,39 @@ export default {
                   this.disableApprove = false
                   this.disableReject = false
                   this.action = false
+                  this.loading=false
                 })
                 .catch((error) => {
                   console.log(error.response)
                 })
             } else {
               Swal.fire({
-                title: 'Success!',
+                title: 'Error!',
                 text: 'Verifikasi Gagal.',
-                icon: 'success',
+                icon: 'error',
               })
               this.loadingApprove = false
               this.need_approve = true
               this.disableApprove = false
               this.disableReject = false
-              this.action = false
+              this.action = true
+              this.loading=false
             }
           })
           .catch((error) => {
             console.log(error.response)
           })
+        }else{
+
+          Swal.fire({
+            title: 'Error!',
+            text: 'Lengkapi alasan anda.',
+            icon: 'error',
+          })
+          this.loadingApprove=false
+          this.loading=false
+        }
+       
       }
     },
     cancel () {
@@ -455,12 +559,13 @@ export default {
       this.action = false
     },
     reject () {
+      this.loading=true
       if (this.action === false) {
         this.disableApprove = true
         this.showOTP = true
         axios({
           method: 'post',
-          url: 'http://localhost:8000/cek_otp/',
+          url: 'http://sd6webdev.indomaret.lan:8000/cek_otp/',
           data: {
             user_id: this.$session.get('id'),
 
@@ -473,7 +578,7 @@ export default {
             if (response.data !== 0) {
               axios({
                 method: 'post',
-                url: 'http://localhost:8000/get_last_otp/',
+                url: 'http://sd6webdev.indomaret.lan:8000/get_last_otp/',
                 data: {
                   user_id: this.$session.get('id'),
 
@@ -485,17 +590,20 @@ export default {
                 .then((response) => {
                   this.referenceNum = response.data
                   this.action = true
+                  this.loading=false
                 })
             } else {
+              this.action = true
               this.genNewOtp()
+              this.loading=false
             }
           })
       } else {
-        if (this.alasan !== '') {
+        if (this.alasan.length >=2) {
           this.loadingReject = true
           axios({
             method: 'post',
-            url: 'http://localhost:8000/submit_otp/',
+            url: 'http://sd6webdev.indomaret.lan:8000/submit_otp/',
             data: {
 
               user_id: this.$session.get('id'),
@@ -511,7 +619,7 @@ export default {
               if (response.data.message === 'berhasil verifikasi') {
                 axios({
                   method: 'post',
-                  url: 'http://localhost:8000/reject_p3at/',
+                  url: 'http://sd6webdev.indomaret.lan:8000/reject_p3at/',
                   data: {
                     p3at_number: this.p3at_number,
                     user_id: this.$session.get('id'),
@@ -534,6 +642,7 @@ export default {
                     this.disableApprove = false
                     this.disableReject = false
                     this.action = false
+                    this.loading=false
                   })
                   .catch((error) => {
                     console.log(error.response)
@@ -548,7 +657,8 @@ export default {
                 this.need_approve = true
                 this.disableApprove = false
                 this.disableReject = false
-                this.action = false
+                this.action = true
+                this.loading=false
               }
             })
             .catch((error) => {
@@ -560,13 +670,15 @@ export default {
             text: 'Lengkapi alasan anda.',
             icon: 'error',
           })
+          this.loading=false
+          this.loadingReject=false
         }
       }
     },
     loadLogHistory (p3at_number) {
       axios({
         method: 'post',
-        url: 'http://localhost:8000/get_log_history/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_log_history/',
         data: {
           P3AT_NUMBER: p3at_number,
         },
@@ -595,7 +707,7 @@ export default {
     detail (item) {
       axios({
         method: 'post',
-        url: 'http://localhost:8000/get_detail_p3at/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_detail_p3at/',
         data: {
           P3AT_NUMBER: item.P3AT_NUMBER,
         },
@@ -609,12 +721,15 @@ export default {
           this.data.forEach((item) => {
             this.data_detail_inq_p3at.push({
               ASSET_NUMBER: item.ASSET_NUMBER,
+              ASSET_NAME: item.ASSET_NAME,
               ASSET_LOCATION: item.ASSET_LOCATION,
               ASSET_PRICE: item.ASSET_PRICE,
-              ASSET_QTY: item.ASSET_QTY,
+              QTY_ASSET: item.QTY_ASSET,
               BOOKS_PRICE: item.BOOKS_PRICE,
               COST_OF_REMOVAL: item.COST_OF_REMOVAL,
               STATUS: item.STATUS,
+              EFFECTIVE_DATE:item.EFFECTIVE_DATE,
+              PEMAKAI:item.PEMAKAI
             })
           })
           this.loadLogHistory(item.P3AT_NUMBER)

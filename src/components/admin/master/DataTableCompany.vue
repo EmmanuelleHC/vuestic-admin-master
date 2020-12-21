@@ -1,5 +1,11 @@
 <template>
   <va-card>
+    <div class="justify center">
+       <div v-if="loading">
+         
+          <loader />
+        </div>
+    </div>
     <v-data-table
       v-model="selected"
       :headers="fields"
@@ -30,7 +36,7 @@
 
         </v-toolbar>
       </template>
-
+      
     </v-data-table>
     <div>
       <va-modal
@@ -78,7 +84,7 @@
 <script>
 import axios from 'axios'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-
+import Loader from '../../../components/statistics/progress-bars/Widgets/Loading.vue'
 import 'sweetalert2/src/sweetalert2.scss'
 export default {
   data () {
@@ -88,6 +94,7 @@ export default {
       pindah: [],
       formTitle: 'Add New Company',
       isFound: false,
+      loading:false,
       selected: [],
       company_code: '',
       active_flag1: '',
@@ -103,6 +110,10 @@ export default {
   },
   created () {
     this.get_company()
+  },
+  components: {
+    Loader,
+   
   },
   computed: {
     fields () {
@@ -141,6 +152,7 @@ export default {
       this.active_flag1 = ''
     },
     submit () {
+      this.loading=true
       if (this.company_code !== '' && this.company_name !== '') {
         if (this.active_flag === true) {
           this.active_flag1 = 'Y'
@@ -150,56 +162,7 @@ export default {
         if (this.action_edit === false) {
            axios({
             method: 'post',
-            url: 'http://localhost:8000/compare_data_company/',
-            data: {
-              company_code: this.company_code,
-              company_name: this.company_name,
-               company_id: this.company_id,
-            },
-            headers: {
-              Authorization: 'Bearer ' + this.$session.get('token'),
-            },
-          })
-            .then(response => {
-              if (response.data === 0) {
-                axios({
-            method: 'post',
-            url: 'http://localhost:8000/insert_data_company/',
-            data: {
-              company_code: this.company_code,
-              company_name: this.company_name,
-              active_flag: this.active_flag,
-              user_id: this.$session.get('id'),
-            },
-            headers: {
-              Authorization: 'Bearer ' + this.$session.get('token'),
-            },
-          })
-            .then(response => {
-              Swal.fire({
-                title: 'Success!',
-                text: 'Company berhasil ditambahkan.',
-                icon: 'success',
-              })
-              this.showCompanyModal = false
-              this.get_company()
-              console.log(response.data)
-            })
-            .catch(error => {
-              console.log(error.response)
-            })
-              } else {
-                Swal.fire({
-                title: 'Error!',
-                text: 'Data company gagal ditambahkan .',
-                icon: 'error',
-              })
-              }
-            })
-        } else {
-          axios({
-            method: 'post',
-            url: 'http://localhost:8000/compare_data_company/',
+            url: 'http://sd6webdev.indomaret.lan:8000/compare_data_company/',
             data: {
               company_code: this.company_code,
               company_name: this.company_name,
@@ -213,7 +176,58 @@ export default {
               if (response.data === 0) {
                 axios({
                   method: 'post',
-                  url: 'http://localhost:8000/update_data_company/',
+                  url: 'http://sd6webdev.indomaret.lan:8000/insert_data_company/',
+                  data: {
+                    company_code: this.company_code,
+                    company_name: this.company_name,
+                    active_flag: this.active_flag,
+                    user_id: this.$session.get('id'),
+                  },
+                  headers: {
+                    Authorization: 'Bearer ' + this.$session.get('token'),
+                  },
+                })
+              .then(response => {
+                Swal.fire({
+                  title: 'Success!',
+                  text: 'Company berhasil ditambahkan.',
+                  icon: 'success',
+                })
+              this.showCompanyModal = false
+              this.get_company()
+              console.log(response.data)
+              this.loading=false
+            })
+            .catch(error => {
+              console.log(error.response)
+            })
+              } else {
+                Swal.fire({
+                title: 'Error!',
+                text: 'Data company gagal ditambahkan .',
+                icon: 'error',
+              })
+                this.loading=false
+              }
+            })
+        } else {
+          axios({
+            method: 'post',
+            url: 'http://sd6webdev.indomaret.lan:8000/compare_data_company/',
+            data: {
+              company_code: this.company_code,
+              company_name: this.company_name,
+               company_id: this.company_id,
+            },
+            headers: {
+              Authorization: 'Bearer ' + this.$session.get('token'),
+            },
+          })
+            .then(response => {
+              if (response.data === 0) {
+                axios({
+                  method: 'post',
+                  url: 'http://sd6webdev.indomaret.lan:8000/update_data_company/',
                   data: {
                     company_code: this.company_code,
                     company_name: this.company_name,
@@ -234,6 +248,7 @@ export default {
                     })
                     this.get_company()
                     console.log(response.data)
+                    this.loading=false
                   })
                   .catch(error => {
                     console.log(error.response)
@@ -244,6 +259,7 @@ export default {
                 text: 'Data company gagal diupdate .',
                 icon: 'error',
               })
+                  this.loading=false
               }
             })
         }
@@ -253,6 +269,7 @@ export default {
           text: 'Harap lengkapi datanya .',
           icon: 'error',
         })
+          this.loading=false
       }
     },
     edit (data) {
@@ -270,9 +287,10 @@ export default {
       this.company_id = data.ID
     },
     get_company: function () {
+      this.loading=true
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_data_master_company/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_data_master_company/',
         data: {
         },
         headers: {
@@ -285,6 +303,7 @@ export default {
           this.data.forEach(item => {
             this.listCompany.push({ COMPANY_CODE: item.COMPANY_CODE, ID: item.COMPANY_ID, COMPANY_NAME: item.COMPANY_NAME, ACTIVE_FLAG: item.ACTIVE_FLAG, ACTIVE_DATE: item.ACTIVE_DATE, INACTIVE_DATE: item.INACTIVE_DATE })
           })
+          this.loading=false
         })
         .catch(error => {
           console.log(error.response)

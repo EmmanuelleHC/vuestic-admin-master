@@ -19,12 +19,25 @@ module.exports = {
       filename: 'index.html',
       // when using title option,
       // template title tag needs to be <title><%= htmlWebpackPlugin.options.title %></title>
-      title: 'Vuestic Admin',
+      title: 'Approval',
       // chunks to include on this page, by default includes
       // extracted common chunks and vendor chunks.
       chunks: ['chunk-vendors', 'chunk-common', 'index'],
     },
   },
+  devServer: {
+        headers: { "Access-Control-Allow-Origin": "*" },
+        disableHostCheck: true,
+        port: 8080,
+        public: 'http://sd6webdev.indomaret.lan:8080/approval',
+        proxy: 'http://sd6webdev.indomaret.lan:8000/',
+
+
+
+
+       // proxy: 'http://sd6webdev.indomaret.lan:8000/'
+    },
+  publicPath: "/",
   configureWebpack: {
     resolve: {
       alias: {

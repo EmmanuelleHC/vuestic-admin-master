@@ -1,5 +1,11 @@
 <template>
   <va-card>
+    <div class="justify center">
+       <div v-if="loading">
+       
+          <loader />
+        </div>
+    </div>
     <v-data-table
       v-model="selected"
       :headers="fields"
@@ -138,7 +144,7 @@
 <script>
 import axios from 'axios'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-
+import Loader from '../../../components/statistics/progress-bars/Widgets/Loading.vue'
 import 'sweetalert2/src/sweetalert2.scss'
 export default {
   data () {
@@ -146,6 +152,7 @@ export default {
       listBranch: [],
       listCompany: [],
       title_modal: '',
+      loading:false,
       listOrgType: [{
         name: 'HO',
         id: 1,
@@ -163,6 +170,7 @@ export default {
       branch_code: '',
       branch_id: '',
       org_id: '',
+      loading:false,
       company: '',
       sob: '',
       org_type: '',
@@ -187,6 +195,10 @@ export default {
   created () {
     this.get_branch()
     this.get_company()
+  },
+  components: {
+    Loader,
+   
   },
   computed: {
     fields () {
@@ -240,9 +252,10 @@ export default {
       this.alt_name = ''
     },
     get_company () {
+      this.loading=true
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_data_master_company/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_data_master_company/',
         data: {
 
         },
@@ -259,17 +272,19 @@ export default {
               text: item.COMPANY_NAME,
             })
           })
+          this.loading=false
         })
         .catch(error => {
           console.log(error.response)
         })
     },
     submit () {
-      if (this.branch_code !== '' && this.branch_name !== '' && this.alt_name !== '' && this.org_id !== '' && this.org_type !== '' && this.sob !== '' && this.company !== '') {
+      this.loading=true
+      if (this.branch_code !== '' && this.branch_name !== '' && this.alt_name !== '' && this.org_id !== '' && this.org_type !== '' && this.sob !== '' && this.company !== ''){
         if (this.action_edit === false) {
           axios({
             method: 'post',
-            url: 'http://localhost:8000/insert_data_cbg/',
+            url: 'http://sd6webdev.indomaret.lan:8000/insert_data_cbg/',
             data: {
               branch_code: this.branch_code,
               branch_name: this.branch_name,
@@ -299,14 +314,16 @@ export default {
                 text: 'Branch berhasil didaftarkan.',
                 icon: 'success',
               })
+
               this.showBranchModal = false
               this.get_branch()
+              this.loading=false
             }
           })
         } else {
           axios({
             method: 'post',
-            url: 'http://localhost:8000/compare_data_branch/',
+            url: 'http://sd6webdev.indomaret.lan:8000/compare_data_branch/',
             data: {
               branch_id: this.branch_id,
               branch_code: this.branch_code,
@@ -327,10 +344,11 @@ export default {
               })
               this.showBranchModal = true
               this.action_edit = true
+              this.loading=false
             } else {
               axios({
                 method: 'post',
-                url: 'http://localhost:8000/update_data_cbg/',
+                url: 'http://sd6webdev.indomaret.lan:8000/update_data_cbg/',
                 data: {
                   branch_id: this.branch_id,
                   branch_code: this.branch_code,
@@ -364,6 +382,7 @@ export default {
                   this.showBranchModal = false
                   this.get_branch()
                   this.action_edit = false
+
                 } else {
                   Swal.fire({
                     title: 'Error!',
@@ -373,6 +392,7 @@ export default {
                   this.showBranchModal = true
                   this.action_edit = true
                 }
+                this.loading=false
               })
             }
           })
@@ -385,13 +405,16 @@ export default {
           text: 'Harap lengkapi datanya .',
           icon: 'error',
         })
+        this.loading=false
       }
+
     },
     edit (data) {
+      this.loading=true
       this.action_edit = true
       axios({
         method: 'post',
-        url: 'http://localhost:8000/get_data_cbg_by_id/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_data_cbg_by_id/',
         data: {
           branch_id: data.BRANCH_ID,
         },
@@ -419,15 +442,17 @@ export default {
           this.showBranchModal = true
           this.title_modal = 'Edit New Branch'
           this.action_edit = true
+          this.loading=false
         })
         .catch(error => {
           console.log(error.response)
         })
     },
     get_branch: function () {
+      this.loading=true
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_data_cbg/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_data_cbg/',
         data: {
 
         },
@@ -451,6 +476,7 @@ export default {
               COMPANY: item.COMPANY,
             })
           })
+          this.loading=false
         })
         .catch(error => {
           console.log(error.response)

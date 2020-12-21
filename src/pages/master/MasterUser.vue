@@ -130,7 +130,7 @@ export default {
     get_resp: function (username) {
       axios({
         method: 'post',
-        url: 'http://localhost:8000/get_resp_user/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_resp_user/',
         data: {
           username: username,
         },
@@ -165,7 +165,7 @@ export default {
       if (this.username !== '') {
         axios({
           method: 'post',
-          url: 'http://localhost:8000/search_user_specific/',
+          url: 'http://sd6webdev.indomaret.lan:8000/search_user_specific/',
           data: {
             username: this.username,
           },
@@ -178,7 +178,7 @@ export default {
               if (this.data_list_user_resp_temp !== []) {
                 axios({
                   method: 'post',
-                  url: 'http://localhost:8000/insert_user/',
+                  url: 'http://sd6webdev.indomaret.lan:8000/insert_user/',
                   data: {
                     username: this.username,
                     role: this.role,
@@ -230,7 +230,7 @@ export default {
                   if (result.isConfirmed) {
                     axios({
                       method: 'post',
-                      url: 'http://localhost:8000/update_user/',
+                      url: 'http://sd6webdev.indomaret.lan:8000/update_user/',
                       data: {
                         username: this.username,
                         role: this.role,
@@ -284,7 +284,7 @@ export default {
     get_list_user_resp: function () {
       axios({
         method: 'post',
-        url: 'http://localhost:8000/get_list_user_resp_by_role/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_list_user_resp_by_role/',
         data: {
           role_id: this.role,
         },
@@ -313,7 +313,7 @@ export default {
     get_role: function () {
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_list_role/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_list_role/',
         data: {
         },
         headers: {

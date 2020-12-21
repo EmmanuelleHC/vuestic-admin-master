@@ -1,5 +1,5 @@
 <template>
-  <va-card>
+  <va-card>    
     <v-data-table
       v-model="selected"
       :headers="fields"

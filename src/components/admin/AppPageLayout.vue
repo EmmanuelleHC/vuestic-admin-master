@@ -2,6 +2,10 @@
   <div class="app-page-layout">
     <slot></slot>
     <slot name="content" />
+     
+     
+   
+  
   </div>
 </template>
 
@@ -9,6 +13,11 @@
 
 export default {
   name: 'app-page-layout',
+  data(){
+    return {
+      
+    }
+  },
   props: {
     mobileWidth: {
       type: Number,

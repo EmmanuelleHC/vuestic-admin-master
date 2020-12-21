@@ -30,7 +30,7 @@ export default {
     get_responsibility: function () {
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_data_master_resp/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_data_master_resp/',
         data: {
         },
         headers: {

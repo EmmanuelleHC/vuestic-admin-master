@@ -43,7 +43,7 @@ export default {
     get_role: function () {
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_list_role/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_list_role/',
         data: {
         },
         headers: {

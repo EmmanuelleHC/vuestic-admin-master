@@ -1,10 +1,10 @@
 <template>
   <div class="inq-p3at">
-    <va-card class="justify-center">
+    <va-card>
+     <div class="justify-center">
       <v-card-title>
         <h2>Inquiry P3AT</h2>
       </v-card-title>
-      <div class="row">
         <data-table-P3AT
           :data_list_inq_p3at="data_list_inq_p3at"
           class="mb-4"
@@ -35,7 +35,7 @@ export default {
     get_inq_p3at: function () {
       axios({
         method: 'post',
-        url: 'http://localhost:8000/get_inq_p3at/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_inq_p3at/',
         data: {
           user_id: this.$session.get('id'),
         },

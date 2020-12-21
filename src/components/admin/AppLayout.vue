@@ -28,7 +28,7 @@
           class="app-layout__main-layout   gutter--xl"
           slot="content"
           role="main"
-        >
+        > 
           <router-view/>
         </main>
       </div>

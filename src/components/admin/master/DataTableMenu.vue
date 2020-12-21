@@ -1,5 +1,11 @@
 <template>
   <va-card>
+    <div class="justify center">
+       <div v-if="loading">
+       
+          <loader />
+        </div>
+    </div>
     <v-data-table
       v-model="selected"
       :headers="fields"
@@ -223,12 +229,13 @@
 <script>
 import axios from 'axios'
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-
+import Loader from '../../../components/statistics/progress-bars/Widgets/Loading.vue'
 import 'sweetalert2/src/sweetalert2.scss'
 export default {
   data () {
     return {
       listMenu: [],
+      loading:false,
       listMenuDetail:[],
       listMenuOption:[],
       listSubMenuOption:[],
@@ -268,6 +275,10 @@ export default {
   },
   created () {
     this.get_menu()
+  },
+  components: {
+    Loader,
+   
   },
   computed: {
     fields () {
@@ -348,10 +359,10 @@ export default {
       this.active_flag1 = ''
     },
     get_data_menu_detail(data){
-
+       this.loading=true
        axios({
             method: 'post',
-            url: 'http://localhost:8000/get_data_menu_detail/',
+            url: 'http://sd6webdev.indomaret.lan:8000/get_data_menu_detail/',
             data: {
               menu_id: data.MENU_ID,
               user_id: this.$session.get('id'),
@@ -361,7 +372,7 @@ export default {
             },
           })
             .then(response => {
-             
+             this.loading=false
              this.listMenuDetail = []
           this.data = response.data
           this.data.forEach(item => {
@@ -373,6 +384,7 @@ export default {
             })
     },
     submit () {
+      this.loading=true
       if (this.menu_name !== '' && this.menu_desc !== '' && this.active_flag !== '' && this.seq !== '') {
         if (this.active_flag === true) {
           this.active_flag1 = 'Y'
@@ -387,7 +399,7 @@ export default {
         if (this.action_edit === false) {
             axios({
               method: 'post',
-              url: 'http://localhost:8000/compare_data_menu/',
+              url: 'http://sd6webdev.indomaret.lan:8000/compare_data_menu/',
               data: {
                 menu_name: this.menu_name,
                 menu_desc: this.menu_desc,
@@ -404,10 +416,11 @@ export default {
                 })
                 this.showMenuModal = true
                 this.action_edit = false
+                this.loading=false
               } else {
                  axios({
                     method: 'post',
-                    url: 'http://localhost:8000/insert_data_menu/',
+                    url: 'http://sd6webdev.indomaret.lan:8000/insert_data_menu/',
                     data: {
                       menu_name: this.menu_name,
                       menu_desc: this.menu_desc,
@@ -428,6 +441,7 @@ export default {
                   })
                   this.showMenuModal = false
                   this.get_menu()
+                  this.loading=false
                   console.log(response.data)
                 })
                 .catch(error => {
@@ -440,7 +454,7 @@ export default {
         } else {
           axios({
               method: 'post',
-              url: 'http://localhost:8000/compare_data_menu/',
+              url: 'http://sd6webdev.indomaret.lan:8000/compare_data_menu/',
               data: {
                 menu_name: this.menu_name,
                 menu_desc: this.menu_desc,
@@ -458,11 +472,12 @@ export default {
                 })
                 this.showMenuModal = true
                 this.action_edit = true
+                this.loading=false
               } else {
                 
                  axios({
             method: 'post',
-            url: 'http://localhost:8000/update_data_menu/',
+            url: 'http://sd6webdev.indomaret.lan:8000/update_data_menu/',
             data: {
               menu_id: this.menu_id,
               menu_name: this.menu_name,
@@ -484,12 +499,14 @@ export default {
                   text: 'Menu gagal diupdate.',
                   icon: 'error',
                 })
+                this.loading=false
               } else {
                 Swal.fire({
                   title: 'Success!',
                   text: 'Menu berhasil diupdate.',
                   icon: 'success',
                 })
+                this.loading=false
               }
 
               this.get_menu()
@@ -506,9 +523,11 @@ export default {
           text: 'Harap lengkapi datanya .',
           icon: 'error',
         })
+        this.loading=false
       }
     },
     submit_submenu () {
+      this.loading=true
       if (this.menu_detail_menu !== '' && this.menu_detail_name !== '' && this.menu_detail_desc !== '' && this.seq_menu_detail !== '') {
           if (this.active_flag === true) {
           this.active_flag1 = 'Y'
@@ -518,7 +537,7 @@ export default {
         if (this.action_edit === false) {
         axios({
               method: 'post',
-              url: 'http://localhost:8000/compare_data_menu_detail/',
+              url: 'http://sd6webdev.indomaret.lan:8000/compare_data_menu_detail/',
               data: {
                 menu_name:this.menu_detail_name,
                 menu_desc:this.menu_detail_desc,
@@ -536,11 +555,12 @@ export default {
                 })
                 this.showMenuDetailModal = true
                 this.action_edit = false
+                this.loading=true
               } else {
                 
                     axios({
             method: 'post',
-            url: 'http://localhost:8000/insert_data_menu_detail/',
+            url: 'http://sd6webdev.indomaret.lan:8000/insert_data_menu_detail/',
             data: {
               menu_id: this.menu_detail_menu,
               menu_name: this.menu_detail_name,
@@ -562,6 +582,7 @@ export default {
               this.showMenuDetailModal = false
               this.get_data_menu_detail()
               console.log(response.data)
+              this.loading=true
             })
             .catch(error => {
               console.log(error.response)
@@ -571,7 +592,7 @@ export default {
         } else {
            axios({
               method: 'post',
-              url: 'http://localhost:8000/compare_data_menu_detail/',
+              url: 'http://sd6webdev.indomaret.lan:8000/compare_data_menu_detail/',
               data: {
                 menu_name:this.menu_detail_name,
                 menu_desc:this.menu_detail_desc,
@@ -589,11 +610,12 @@ export default {
                 })
                 this.showMenuDetailModal = true
                 this.action_edit = true
+                this.loading=false
               } else {
                 
                   axios({
             method: 'post',
-            url: 'http://localhost:8000/update_data_menu_detail/',
+            url: 'http://sd6webdev.indomaret.lan:8000/update_data_menu_detail/',
             data: {
               menu_detail_id: this.menu_detail_id,
               menu_id: this.menu_detail_menu,
@@ -616,6 +638,7 @@ export default {
                   text: 'Menu Detail gagal diupdate.',
                   icon: 'error',
                 })
+
               } else {
                 Swal.fire({
                   title: 'Success!',
@@ -625,6 +648,7 @@ export default {
               }
               this.close_modal()
               this.get_data_menu_detail()
+              this.loading=false
             })
             .catch(error => {
               console.log(error.response)
@@ -638,6 +662,7 @@ export default {
           text: 'Harap lengkapi datanya .',
           icon: 'error',
         })
+        this.loading=false
       }
     },
     edit (data) {
@@ -681,9 +706,10 @@ export default {
       this.seq_menu_detail = data.SEQ
     },
     get_menu: function () {
+      this.loading=true
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_data_menu/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_data_menu/',
         data: {
         },
         headers: {
@@ -699,7 +725,7 @@ export default {
              this.listMenuOption.push({ id: item.MENU_ID, name: item.MENU_NAME })
             
             })
-
+            this.loading=false
 
         })
         .catch(error => {
@@ -710,7 +736,7 @@ export default {
       this.menu_detail_menu=value
       axios({
         method: 'POST',
-        url: 'http://localhost:8000/get_data_submenu/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_data_submenu/',
         data: {
           menu_id:this.menu_detail_menu
         },

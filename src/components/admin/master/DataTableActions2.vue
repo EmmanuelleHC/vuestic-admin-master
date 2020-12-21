@@ -14,7 +14,6 @@
 
   </va-card>
 </template>
-
 <script>
 import {
   serverBus,
@@ -32,6 +31,8 @@ export default {
   },
   created () {
     this.get_username()
+  },
+   mounted () {
   },
   computed: {
     fields () {
@@ -80,7 +81,7 @@ export default {
     get_username: function () {
       axios({
         method: 'get',
-        url: 'http://localhost:8000/get_list_username/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_list_username/',
         data: {
 
         },

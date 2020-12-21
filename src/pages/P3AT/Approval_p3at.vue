@@ -1,15 +1,16 @@
 <template>
   <div class="inq-p3at">
-    <va-card class="justify-center">
-      <v-card-title>
+
+    <va-card >
+    <div class="justify-center">
+         <v-card-title>
         <h2>Approval P3AT</h2>
       </v-card-title>
-      <div class="row">
+      
         <data-table-P3AT
           :data_list_inq_p3at="data_list_inq_p3at"
           class="mb-4"
         />
-        <div>
           <div v-if="loading">
             <v-progress-circular
               indeterminate
@@ -22,8 +23,10 @@
           <div v-else>
             <!-- request finished -->
           </div>
-        </div>
-      </div>
+        
+    
+    </div>
+     
     </va-card>
   </div>
 </template>
@@ -52,7 +55,7 @@ export default {
       this.loading = true
       axios({
         method: 'POST',
-        url: 'http://localhost:8000/get_inq_app_p3at/',
+        url: 'http://sd6webdev.indomaret.lan:8000/get_inq_app_p3at/',
         data: {
           user_id: this.$session.get('id'),
         },
